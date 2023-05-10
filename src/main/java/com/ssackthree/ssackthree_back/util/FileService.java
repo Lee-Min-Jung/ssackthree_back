@@ -55,6 +55,13 @@ public class FileService {
         amazonS3.deleteObject(bucket, fileName);
     }
 
+    // 파일 여러개 삭제
+    public void deleteFileList(String[] fileNameList){
+        for(String fileName : fileNameList){
+            amazonS3.deleteObject(bucket, fileName);
+        }
+    }
+
 
 
 }

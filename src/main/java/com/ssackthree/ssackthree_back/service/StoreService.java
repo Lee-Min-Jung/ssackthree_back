@@ -8,6 +8,7 @@ import com.ssackthree.ssackthree_back.dto.StoreRegisterRequestDto;
 import com.ssackthree.ssackthree_back.dto.StoreRegisterResponseDto;
 import com.ssackthree.ssackthree_back.entity.*;
 import com.ssackthree.ssackthree_back.repository.*;
+import com.ssackthree.ssackthree_back.util.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
@@ -41,9 +42,8 @@ public class StoreService {
     private final StoreProfileFileRepository storeProfileFileRepository;
     private final StoreMenuFileRepository storeMenuFileRepository;
     private final StoreLocationRepository storeLocationRepository;
+    private final FileService fileService;
 
-    @Value("${upload-path}")
-    private String uploadPath;
 
     @Value("${google.api.key}")
     private String apiKey;
@@ -70,22 +70,20 @@ public class StoreService {
 
         // 프로필 사진 저장
         if(profile != null){
-            String profileOriginName = profile.getOriginalFilename();
-            UUID profileUuid = UUID.randomUUID();
-            String profileSavedFileName = profileUuid.toString() + "_" + profileOriginName;
-            String profileFilePath = uploadPath+profileSavedFileName;
+            String savedProfileFileName = fileService.getSavedFileName(profile);
+
+            // s3에 파일 업로드
+            fileService.uploadFile(profile, savedProfileFileName);
+
+            // DB 내용 저장
             StoreProfileFileEntity storeProfileFileEntity = StoreProfileFileEntity.builder()
-                    .fileOriginName(profileOriginName)
-                    .fileName(profileSavedFileName)
-                    .filePath(profileFilePath)
+                    .fileOriginName(profile.getOriginalFilename())
+                    .fileName(savedProfileFileName)
+                    .filePath(fileService.getUrl(savedProfileFileName))
                     .storeEntity(storeEntity)
                     .build();
             storeProfileFileRepository.save(storeProfileFileEntity);
-            try {
-                profile.transferTo(new File(profileFilePath));
-            } catch (IOException e) {
-                log.error("가게 프로필 사진 등록 실패");
-            }
+
         }
 
         // 가게 메뉴 저장
@@ -93,22 +91,19 @@ public class StoreService {
             ArrayList<StoreMenuFileEntity> storeMenuFileEntities = new ArrayList<>();
 
             for(MultipartFile menu : menus){
-                String menuOriginName = menu.getOriginalFilename();
-                UUID menuUuid = UUID.randomUUID();
-                String menuSavedFileName = menuUuid.toString() + "_" + menuOriginName;
-                String menuFilePath = uploadPath+menuSavedFileName;
+                String savedMenuFileName = fileService.getSavedFileName(menu);
+
+                // s3에 파일 업로드
+                fileService.uploadFile(profile, savedMenuFileName);
+
+                // Db 내용 저장
                 StoreMenuFileEntity storeMenuFileEntity = StoreMenuFileEntity.builder()
-                        .fileOriginName(menuOriginName)
-                        .fileName(menuSavedFileName)
-                        .filePath(menuFilePath)
+                        .fileOriginName(menu.getOriginalFilename())
+                        .fileName(savedMenuFileName)
+                        .filePath(fileService.getUrl(savedMenuFileName))
                         .storeEntity(storeEntity)
                         .build();
                 storeMenuFileEntities.add(storeMenuFileEntity);
-                try {
-                    menu.transferTo(new File(menuFilePath));
-                } catch (IOException e) {
-                    log.error("메뉴 사진 등록 실패");
-                }
             }
             storeMenuFileRepository.saveAll(storeMenuFileEntities);
 
@@ -182,53 +177,48 @@ public class StoreService {
 
         //가게 프로필
         if(profile != null){
-            String profileOriginName = profile.getOriginalFilename();
-            UUID profileUuid = UUID.randomUUID();
-            String profileSavedFileName = profileUuid.toString() + "_" + profileOriginName;
-            String profileFilePath = uploadPath+profileSavedFileName;
+            String savedProfileFileName = fileService.getSavedFileName(profile);
+
+            // s3에 파일 업로드
+            fileService.uploadFile(profile, savedProfileFileName);
 
             Optional<StoreProfileFileEntity> storeProfileFileEntity = storeProfileFileRepository.findByStoreEntityId(storeRegisterRequestDto.getId());
 
-            if(storeProfileFileEntity.isPresent()){
-                String deletePath = storeProfileFileEntity.get().getFilePath();
-                deleteFile(deletePath);
+            if(storeProfileFileEntity.isPresent()){ // 기존에 파일이 있을 경우
+                // 기존 파일 삭제
+                String delFileName = storeProfileFileEntity.get().getFileName();
+                fileService.deleteFile(delFileName);
+
+                // 수정
                 StoreProfileFileEntity savedStoreProfileFileEntity = StoreProfileFileEntity.builder()
                         .id(storeProfileFileEntity.get().getId())
-                        .fileOriginName(profileOriginName)
-                        .fileName(profileSavedFileName)
-                        .filePath(profileFilePath)
+                        .fileOriginName(profile.getOriginalFilename())
+                        .fileName(savedProfileFileName)
+                        .filePath(fileService.getUrl(savedProfileFileName))
                         .storeEntity(storeEntity)
                         .build();
                 storeProfileFileRepository.save(savedStoreProfileFileEntity);
-            }else{
+            }else{ // 기존에 파일이 없을 경우
                 StoreProfileFileEntity savedStoreProfileFileEntity = StoreProfileFileEntity.builder()
-                        .fileOriginName(profileOriginName)
-                        .fileName(profileSavedFileName)
-                        .filePath(profileFilePath)
+                        .fileOriginName(profile.getOriginalFilename())
+                        .fileName(savedProfileFileName)
+                        .filePath(fileService.getUrl(savedProfileFileName))
                         .storeEntity(storeEntity)
                         .build();
                 storeProfileFileRepository.save(savedStoreProfileFileEntity);
             }
 
-
-            try {
-                profile.transferTo(new File(profileFilePath));
-            } catch (IOException e) {
-                log.error("가게 프로필 사진 업데이트 실패");
-            }
         }
 
         // 가게 메뉴
-
-        // 기존 거 삭제
         Optional<StoreMenuFileEntity[]> storeMenuFileEntity = storeMenuFileRepository.findByStoreEntityId(storeRegisterRequestDto.getId());
-        if(storeMenuFileEntity.isPresent()){
-            String[] delFilePath = new String[storeMenuFileEntity.get().length];
-            for(int i = 0; i<delFilePath.length; i++){
-                delFilePath[i] = storeMenuFileEntity.get()[i].getFilePath();
+        if(storeMenuFileEntity.isPresent()){ // 가게 메뉴 파일이 있었으면 삭제
+            String[] delFileNameList = new String[storeMenuFileEntity.get().length];
+            for(int i = 0; i<delFileNameList.length; i++){
+                delFileNameList[i] = storeMenuFileEntity.get()[i].getFileName();
             }
 
-            deleteFileList(delFilePath);
+            fileService.deleteFileList(delFileNameList);
             storeMenuFileRepository.deleteByStoreEntityId(storeRegisterRequestDto.getId());
 
         }
@@ -238,22 +228,18 @@ public class StoreService {
             ArrayList<StoreMenuFileEntity> storeMenuFileEntities = new ArrayList<>();
 
             for(MultipartFile menu : menus){
-                String menuOriginName = menu.getOriginalFilename();
-                UUID menuUuid = UUID.randomUUID();
-                String menuSavedFileName = menuUuid.toString() + "_" + menuOriginName;
-                String menuFilePath = uploadPath+menuSavedFileName;
+                String savedMenuFileName = fileService.getSavedFileName(menu);
+
+                // s3에 파일 업로드
+                fileService.uploadFile(profile, savedMenuFileName);
+
                 StoreMenuFileEntity storeMenuFileEntitySaved = StoreMenuFileEntity.builder()
-                        .fileOriginName(menuOriginName)
-                        .fileName(menuSavedFileName)
-                        .filePath(menuFilePath)
+                        .fileOriginName(menu.getOriginalFilename())
+                        .fileName(savedMenuFileName)
+                        .filePath(fileService.getUrl(savedMenuFileName))
                         .storeEntity(storeEntity)
                         .build();
                 storeMenuFileEntities.add(storeMenuFileEntitySaved);
-                try {
-                    menu.transferTo(new File(menuFilePath));
-                } catch (IOException e) {
-                    log.error("메뉴 사진 등록 실패");
-                }
             }
             storeMenuFileRepository.saveAll(storeMenuFileEntities);
 
@@ -262,22 +248,6 @@ public class StoreService {
 
     }
 
-    public void deleteFile(String filePath){
-        File delFile = new File(filePath);
-        if(delFile.isFile()){
-            delFile.delete();
-        }
-    }
-
-    public void deleteFileList(String[] filePathList){
-        for(String path : filePathList){
-            File delFile = new File(path);
-            if(delFile.isFile()){
-                delFile.delete();
-            }
-
-        }
-    }
 
     public ResponseEntity<Resource> getProfile(long userId){
         Optional<StoreEntity> storeEntity = storeRepository.findByUserEntityId(userId);

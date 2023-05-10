@@ -27,8 +27,7 @@ public class CustomerService {
     private final CustomerProfileFileRepository customerProfileFileRepository;
     private final FileService fileService;
 
-    @Value("${upload-path}")
-    private String uploadPath;
+
 
     @Transactional
     public void uploadProfile(MultipartFile file, long userId) throws IOException {
