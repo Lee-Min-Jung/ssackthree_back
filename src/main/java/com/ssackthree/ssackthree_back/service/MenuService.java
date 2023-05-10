@@ -6,6 +6,7 @@ import com.ssackthree.ssackthree_back.enums.MenuStatusEnum;
 import com.ssackthree.ssackthree_back.enums.MenuTypeEnum;
 import com.ssackthree.ssackthree_back.repository.*;
 import com.ssackthree.ssackthree_back.service.customizedClass.MenuIdDistance;
+import com.ssackthree.ssackthree_back.util.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,13 +32,13 @@ public class MenuService {
     private final MenuStatusRepository menuStatusRepository;
     private final MenuBargainningRepository menuBargainningRepository;
     private final UserLikeRepository userLikeRepository;
+    private final FileService fileService;
 
     public static final double EARTH_RADIUS = 6371.0088; // 지구 반지름 상수 선언
 
-    @Value("${upload-path}")
-    private String uploadPath;
 
-    public void registerMenu(MenuRegisterRequestDto menuRegisterRequestDto, MultipartFile[] menus){
+
+    public void registerMenu(MenuRegisterRequestDto menuRegisterRequestDto, MultipartFile[] menus) throws IOException {
 
         MenuTypeEnum menuTypeEnum = getMenuType(menuRegisterRequestDto.getType());
 
@@ -93,28 +94,24 @@ public class MenuService {
         menuStatusRepository.save(menuStatusEntity);
     }
 
-    public void registerMenuImageFile(MultipartFile[] menus, MenuEntity menuEntity){
+    public void registerMenuImageFile(MultipartFile[] menus, MenuEntity menuEntity) throws IOException {
         if(menus != null){
             ArrayList<MenuFileEntity> menuFileEntities = new ArrayList<>();
 
             for(MultipartFile menu : menus){
-                String menuOriginName = menu.getOriginalFilename();
-                UUID menuUuid = UUID.randomUUID();
-                String menuSavedFileName = menuUuid.toString() + "_" + menuOriginName;
-                String menuFilePath = uploadPath+menuSavedFileName;
+                String savedMenuFileName = fileService.getSavedFileName(menu);
+
+                // s3에 파일 업로드
+                fileService.uploadFile(menu, savedMenuFileName);
 
                 MenuFileEntity menuFileEntity = MenuFileEntity.builder()
-                        .fileOriginName(menuOriginName)
-                        .fileName(menuSavedFileName)
-                        .filePath(menuFilePath)
+                        .fileOriginName(menu.getOriginalFilename())
+                        .fileName(savedMenuFileName)
+                        .filePath(fileService.getUrl(savedMenuFileName))
                         .menuEntity(menuEntity)
                         .build();
                 menuFileEntities.add(menuFileEntity);
-                try {
-                    menu.transferTo(new File(menuFilePath));
-                } catch (IOException e) {
-                    log.error("메뉴 사진 등록 실패");
-                }
+
             }
             menuFileRepository.saveAll(menuFileEntities);
 
