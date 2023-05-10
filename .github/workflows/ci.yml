@@ -4,7 +4,7 @@ on:
   release:
     types: [push]
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 
 jobs:
