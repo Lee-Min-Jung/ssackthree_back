@@ -32,7 +32,7 @@ public class StoreController {
     }
 
     @GetMapping(path = "/profile/show/{userId}")
-    public ResponseEntity<Resource> getProfile(@PathVariable(name="userId") long userId) throws Exception{
+    public String getProfile(@PathVariable(name="userId") long userId) throws Exception{
         return storeService.getProfile(userId);
     }
 

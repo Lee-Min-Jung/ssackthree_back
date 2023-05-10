@@ -249,27 +249,12 @@ public class StoreService {
     }
 
 
-    public ResponseEntity<Resource> getProfile(long userId){
+    public String getProfile(long userId){
         Optional<StoreEntity> storeEntity = storeRepository.findByUserEntityId(userId);
         if(storeEntity.isPresent()){
             Optional<StoreProfileFileEntity> storeProfileFileEntity = storeProfileFileRepository.findByStoreEntityId(storeEntity.get().getId());
             if(storeProfileFileEntity.isPresent()){
-                String filePathStr = storeProfileFileEntity.get().getFilePath();
-                Resource resource = new FileSystemResource(filePathStr);
-
-                if(!resource.exists()){
-                    return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
-                }
-                HttpHeaders header = new HttpHeaders();
-                Path filePath = null;
-                try {
-                    filePath = Paths.get(filePathStr);
-                    header.add("Content-Type", Files.probeContentType(filePath));
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-                return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
+                return storeProfileFileEntity.get().getFilePath();
             }
         }
         return null;
