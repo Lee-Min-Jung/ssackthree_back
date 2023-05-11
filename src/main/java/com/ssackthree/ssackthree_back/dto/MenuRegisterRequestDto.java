@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,6 +21,6 @@ public class MenuRegisterRequestDto {
     private String isBargainning;
     private MenuBargainningDto menuBargainningDto;
     private String type;
-    private int endTime;
+    private LocalDateTime endTime;
 
 }

@@ -32,7 +32,7 @@ public class MenuEntity {
     private String name;
     private int originalPrice;
     private int discountedPrice;
-    private int endTime;
+    private LocalDateTime endTime;
 
     @Enumerated(EnumType.STRING)
     private MenuTypeEnum type;
