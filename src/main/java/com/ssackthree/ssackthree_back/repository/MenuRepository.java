@@ -16,7 +16,7 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Long> {
             "FROM MenuEntity m " +
             "WHERE (:isBargainning = '' OR m.isBargainning = :isBargainning) " +
             "AND (:typeList IS NULL OR m.type IN :typeList)" +
-            "AND (m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.ORDER_ING)"
+            "AND (m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.ORDER_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_ING)"
     )
     List<Long> findIdsByIsBargainningAndTypeIn(@Param("isBargainning") String isBargainning, @Param("typeList") List<MenuTypeEnum> typeList);
 

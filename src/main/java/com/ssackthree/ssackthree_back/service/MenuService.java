@@ -256,7 +256,7 @@ public class MenuService {
             // 다른 메뉴 정보
             List<MenuOtherDto> menuOtherDtoList = new ArrayList<>();
             for(MenuEntity m : menu.get().getStoreEntity().getMenuEntityList()){
-                if(!menu.get().equals(m)){
+                if(!menu.get().equals(m) && (m.getMenuStatusEntity().getMenuStatus() == MenuStatusEnum.ORDER_ING || m.getMenuStatusEntity().getMenuStatus() == MenuStatusEnum.BARGAIN_ING)){
                     menuOtherDtoList.add(setMenuOtherDto(m));
                 }
             }
