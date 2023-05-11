@@ -1,10 +1,19 @@
 package com.ssackthree.ssackthree_back.service;
 
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.LatLng;
+import com.ssackthree.ssackthree_back.dto.SetLocationRequestDto;
 import com.ssackthree.ssackthree_back.entity.CustomerProfileFileEntity;
+import com.ssackthree.ssackthree_back.entity.StoreLocationEntity;
 import com.ssackthree.ssackthree_back.entity.UserEntity;
+import com.ssackthree.ssackthree_back.entity.UserLocationEntity;
 import com.ssackthree.ssackthree_back.repository.CustomerProfileFileRepository;
+import com.ssackthree.ssackthree_back.repository.UserLocationRepository;
 import com.ssackthree.ssackthree_back.repository.UserRepository;
 import com.ssackthree.ssackthree_back.util.FileService;
+import com.ssackthree.ssackthree_back.util.LocationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +35,8 @@ public class CustomerService {
     private final UserRepository userRepository;
     private final CustomerProfileFileRepository customerProfileFileRepository;
     private final FileService fileService;
+    private final UserLocationRepository userLocationRepository;
+    private final LocationService locationService;
 
 
 
@@ -92,4 +103,21 @@ public class CustomerService {
         }
         return null;
     }
+
+    public void registerLocation(SetLocationRequestDto setLocationRequestDto) throws Exception {
+        LatLng location = locationService.getLocation(setLocationRequestDto.getAddress());
+        if(location != null){
+            double latitude = location.lat;
+            double longitude = location.lng;
+            UserLocationEntity userLocationEntity = UserLocationEntity.builder()
+                    .latitude(latitude)
+                    .longitude(longitude)
+                    .m(setLocationRequestDto.getM())
+                    .userEntity(userRepository.findById(setLocationRequestDto.getUserId()).get())
+                    .build();
+            userLocationRepository.save(userLocationEntity);
+        }
+    }
+
+
 }

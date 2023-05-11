@@ -9,12 +9,10 @@ import com.ssackthree.ssackthree_back.service.customizedClass.MenuIdDistance;
 import com.ssackthree.ssackthree_back.util.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -33,6 +31,7 @@ public class MenuService {
     private final MenuBargainningRepository menuBargainningRepository;
     private final UserLikeRepository userLikeRepository;
     private final FileService fileService;
+    private final UserLocationRepository userLocationRepository;
 
     public static final double EARTH_RADIUS = 6371.0088; // 지구 반지름 상수 선언
 
@@ -165,8 +164,12 @@ public class MenuService {
         // 흥정 조건과 메뉴 타입 조건에 맞는 id 리스트
         List<Long> menuIdListForBarginAndType = menuRepository.findIdsByIsBargainningAndTypeIn(homePageRequestDto.getIsBargainning(), homePageRequestDto.getTypeList());
 
+        // 해당 유저가 설정한 위치 정보
+        Optional<UserLocationEntity> userLocation = userLocationRepository.findById(homePageRequestDto.getUserId());
+
+
         // 위의 조건 만족하면서 거리 안에 있는 id와 거리 리스트
-        List<MenuIdDistance> idDistanceList = getMenuIdDistance(homePageRequestDto, menuIdListForBarginAndType);
+        List<MenuIdDistance> idDistanceList = getMenuIdDistance(userLocation.get(), menuIdListForBarginAndType);
         List<Long> menuIdList = new ArrayList<>();
         List<Double> menuDistanceList = new ArrayList<>();
 
@@ -296,13 +299,13 @@ public class MenuService {
 
     }
 
-    public List<MenuIdDistance> getMenuIdDistance(HomePageRequestDto homePageRequestDto, List<Long> idList){
+    public List<MenuIdDistance> getMenuIdDistance(UserLocationEntity userLocation, List<Long> idList){
         List<MenuLocationEntity> menuLocationEntityList = menuLocationRepository.findAll();
         List<MenuIdDistance> menuIdDistanceList = new ArrayList<>();
         for(MenuLocationEntity menuLocation : menuLocationEntityList){
             if(idList.contains(menuLocation.getMenuEntity().getId())){
-                double distance = getDistance(homePageRequestDto.getLatitude(), homePageRequestDto.getLongitude(), menuLocation.getLatitude(), menuLocation.getLongitude());
-                if(distance <= homePageRequestDto.getKm()){
+                double distance = getDistance(userLocation.getLatitude(), userLocation.getLongitude(), menuLocation.getLatitude(), menuLocation.getLongitude());
+                if(distance <= userLocation.getM()){
                     menuIdDistanceList.add(new MenuIdDistance(menuLocation.getMenuEntity().getId(), distance));
                 }
             }

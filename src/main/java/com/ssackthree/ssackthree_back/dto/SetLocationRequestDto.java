@@ -1,22 +1,16 @@
 package com.ssackthree.ssackthree_back.dto;
 
-import com.ssackthree.ssackthree_back.enums.MenuTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class HomePageRequestDto {
-
-    private String sortType;
-    private String isBargainning;
-    private List<MenuTypeEnum> typeList;
+public class SetLocationRequestDto {
+    private String address;
+    private int m;
     private long userId;
-
 }
