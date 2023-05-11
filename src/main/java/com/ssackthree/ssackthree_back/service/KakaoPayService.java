@@ -5,9 +5,12 @@ import com.ssackthree.ssackthree_back.dto.KakaoPayReadyResponseDto;
 import com.ssackthree.ssackthree_back.dto.KakaoPayRequestDto;
 import com.ssackthree.ssackthree_back.dto.KakaoPayResultResponseDto;
 import com.ssackthree.ssackthree_back.entity.MenuEntity;
+import com.ssackthree.ssackthree_back.entity.MenuStatusEntity;
 import com.ssackthree.ssackthree_back.entity.OrderEntity;
 import com.ssackthree.ssackthree_back.entity.StoreEntity;
+import com.ssackthree.ssackthree_back.enums.MenuStatusEnum;
 import com.ssackthree.ssackthree_back.repository.MenuRepository;
+import com.ssackthree.ssackthree_back.repository.MenuStatusRepository;
 import com.ssackthree.ssackthree_back.repository.OrderRepository;
 import com.ssackthree.ssackthree_back.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +47,7 @@ public class KakaoPayService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
+    private final MenuStatusRepository menuStatusRepository;
 
     public KakaoPayReadyResponseDto payReady(KakaoPayRequestDto kakaoPayRequestDto){
         // orderEntity 생성
@@ -123,11 +127,26 @@ public class KakaoPayService {
                 requestEntity,
                 KakaoPayApproveResponseDto.class);
 
+        // 주문한 메뉴 상태 변경
+        updateMenuStatus(approveResponse);
+
+
         // 주문 세부 정보 저장
         approveResponse.setKakaoPayResultResponseDto(getKakaoPayResultResponseDto(Long.parseLong(approveResponse.getPartner_order_id())));
 
         return approveResponse;
 
+    }
+
+    public void updateMenuStatus(KakaoPayApproveResponseDto approveResponse){
+        MenuEntity menuEntity = orderRepository.findById(Long.parseLong(approveResponse.getPartner_order_id())).get().getMenuEntity();
+        MenuStatusEntity menuStatusEntity = menuEntity.getMenuStatusEntity();
+        MenuStatusEntity updatedMenuStatusEntity = MenuStatusEntity.builder()
+                .menuStatus(MenuStatusEnum.ORDER_COMPLETED)
+                .id(menuStatusEntity.getId())
+                .menuEntity(menuEntity)
+                .build();
+        menuStatusRepository.save(updatedMenuStatusEntity);
     }
 
     public KakaoPayResultResponseDto getKakaoPayResultResponseDto(long orderId){
