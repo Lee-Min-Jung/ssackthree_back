@@ -12,7 +12,12 @@ import java.util.List;
 @Repository
 public interface MenuRepository extends JpaRepository<MenuEntity, Long> {
 
-    @Query("SELECT m.id FROM MenuEntity m WHERE (:isBargainning = '' OR m.isBargainning = :isBargainning) AND (:typeList IS NULL OR m.type IN :typeList)")
+    @Query("SELECT m.id " +
+            "FROM MenuEntity m " +
+            "WHERE (:isBargainning = '' OR m.isBargainning = :isBargainning) " +
+            "AND (:typeList IS NULL OR m.type IN :typeList)" +
+            "AND (m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.ORDER_ING)"
+    )
     List<Long> findIdsByIsBargainningAndTypeIn(@Param("isBargainning") String isBargainning, @Param("typeList") List<MenuTypeEnum> typeList);
 
 
