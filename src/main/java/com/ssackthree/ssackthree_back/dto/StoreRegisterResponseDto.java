@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 @Getter
@@ -19,8 +20,8 @@ public class StoreRegisterResponseDto{
     private String detailAddress;
     private String zipcode;
     private String phoneNumber;
-    private int startTime;
-    private int endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private String holiday;
     private String introduce;
     private ArrayList<String> menuFileNameList = new ArrayList<>();

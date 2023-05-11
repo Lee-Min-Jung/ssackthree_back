@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -18,8 +20,8 @@ public class StoreRegisterRequestDto {
     private String detailAddress;
     private String zipcode;
     private String phoneNumber;
-    private int startTime;
-    private int endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private String holiday;
     private String introduce;
     private long userId;

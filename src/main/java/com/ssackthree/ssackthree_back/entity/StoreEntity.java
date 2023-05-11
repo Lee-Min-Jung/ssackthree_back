@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import com.ssackthree.ssackthree_back.entity.UserEntity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +35,9 @@ public class StoreEntity {
 
     private String phoneNumber;
 
-    private int startTime;
+    private LocalTime startTime;
 
-    private int endTime;
+    private LocalTime endTime;
 
     private String holiday;
 

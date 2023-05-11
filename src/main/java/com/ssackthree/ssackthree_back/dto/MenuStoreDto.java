@@ -5,14 +5,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class MenuStoreDto {
     private String storeName;
-    private int startTime;
-    private int endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private String holiday;
     private String phoneNumber;
     private double latitude;
