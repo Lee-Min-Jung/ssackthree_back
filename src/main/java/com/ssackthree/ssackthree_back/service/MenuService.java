@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -74,10 +75,19 @@ public class MenuService {
         MenuBargainningEntity menuBargainningEntity = MenuBargainningEntity.builder()
                 .limitTime(menuBargainningDto.getLimitTime())
                 .minPrice(menuBargainningDto.getMinPrice())
+                .bargainEnd(getAfterTime(menuBargainningDto.getLimitTime()))
                 .menuEntity(menuEntity)
                 .build();
 
         menuBargainningRepository.save(menuBargainningEntity);
+    }
+
+    public String getAfterTime(int period){
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime afterTime = currentTime.plusMinutes(period);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedAfterTime = afterTime.format(formatter);
+        return formattedAfterTime;
     }
 
     public void registerMenuStatus(String isBargainning, MenuEntity menuEntity){
