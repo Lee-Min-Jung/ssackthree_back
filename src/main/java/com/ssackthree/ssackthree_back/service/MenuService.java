@@ -91,6 +91,7 @@ public class MenuService {
         return afterTime;
     }
 
+
     public void registerMenuStatus(String isBargainning, MenuEntity menuEntity){
         MenuStatusEnum menuStatusEnum = MenuStatusEnum.ORDER_ING;
         if(isBargainning.equals("T")){
@@ -169,16 +170,27 @@ public class MenuService {
 //        }
 //    }
 
-//    @Scheduled(fixedRate = 60000) // 60초마다 실행
-//    public void updateBargainningEndTime(){
-//        List<MenuBargainningEntity> menuBargainningEntityList = menuBargainningRepository.findAll();
-//
-//        for(MenuBargainningEntity menuBargainning : menuBargainningEntityList){
-//            if(menuBargainning.getBargainEnd().isBefore(getAfterTime(menuBargainning.getLimitTime()))){ // 마감 시간 지남
-//
-//            }
-//        }
-//    }
+    @Scheduled(fixedRate = 60000) // 60초마다 실행
+    public void updateBargainningEndTime(){
+        log.info("*****************************************");
+        List<MenuBargainningEntity> menuBargainningEntityList = menuBargainningRepository.findAll();
+
+        for(MenuBargainningEntity menuBargainning : menuBargainningEntityList){
+            if(menuBargainning.getBargainEnd().isBefore(LocalDateTime.now())){ // 마감 시간 지남
+                if(menuBargainning.getMenuEntity().getBargainOrderEntityList().size() == 0){ // 흥정 주문 0개
+                    LocalDateTime updatedBargainEnd = getAfterTime(menuBargainning.getLimitTime());
+                    MenuBargainningEntity menuBargainningEntity = MenuBargainningEntity.builder()
+                            .id(menuBargainning.getId())
+                            .limitTime(menuBargainning.getLimitTime())
+                            .minPrice(menuBargainning.getMinPrice())
+                            .menuEntity(menuBargainning.getMenuEntity())
+                            .bargainEnd(updatedBargainEnd)
+                            .build();
+                    menuBargainningRepository.save(menuBargainningEntity);
+                }
+            }
+        }
+    }
 
     public List<MenuInDistanceResponseDto> getMenuListInDistance(HomePageRequestDto homePageRequestDto){
 
