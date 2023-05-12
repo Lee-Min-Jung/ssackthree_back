@@ -9,6 +9,7 @@ import com.ssackthree.ssackthree_back.service.customizedClass.MenuIdDistance;
 import com.ssackthree.ssackthree_back.util.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,12 +83,12 @@ public class MenuService {
         menuBargainningRepository.save(menuBargainningEntity);
     }
 
-    public String getAfterTime(int period){
+    public LocalDateTime getAfterTime(int period){
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime afterTime = currentTime.plusMinutes(period);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedAfterTime = afterTime.format(formatter);
-        return formattedAfterTime;
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        String formattedAfterTime = afterTime.format(formatter);
+        return afterTime;
     }
 
     public void registerMenuStatus(String isBargainning, MenuEntity menuEntity){
@@ -168,6 +169,16 @@ public class MenuService {
 //        }
 //    }
 
+//    @Scheduled(fixedRate = 60000) // 60초마다 실행
+//    public void updateBargainningEndTime(){
+//        List<MenuBargainningEntity> menuBargainningEntityList = menuBargainningRepository.findAll();
+//
+//        for(MenuBargainningEntity menuBargainning : menuBargainningEntityList){
+//            if(menuBargainning.getBargainEnd().isBefore(getAfterTime(menuBargainning.getLimitTime()))){ // 마감 시간 지남
+//
+//            }
+//        }
+//    }
 
     public List<MenuInDistanceResponseDto> getMenuListInDistance(HomePageRequestDto homePageRequestDto){
 

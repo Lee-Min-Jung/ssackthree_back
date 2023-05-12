@@ -46,4 +46,7 @@ public class UserEntity {
     @OneToOne(mappedBy = "userEntity")
     private UserLocationEntity userLocationEntity;
 
+    @OneToMany(mappedBy = "userEntity")
+    private List<BargainOrderEntity> bargainOrderEntityList;
+
 }

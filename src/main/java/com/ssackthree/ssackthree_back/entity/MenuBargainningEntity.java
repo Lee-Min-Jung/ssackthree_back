@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.bytebuddy.asm.Advice;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -24,7 +25,7 @@ public class MenuBargainningEntity {
     @Column(name = "menu_bargainning_id")
     private long id;
 
-    private String bargainEnd;
+    private LocalDateTime bargainEnd;
 
     private int minPrice;
     private int limitTime;
