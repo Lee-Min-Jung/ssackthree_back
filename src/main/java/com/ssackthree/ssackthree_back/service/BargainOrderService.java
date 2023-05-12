@@ -1,5 +1,6 @@
 package com.ssackthree.ssackthree_back.service;
 
+import com.ssackthree.ssackthree_back.dto.BargainListResponseDto;
 import com.ssackthree.ssackthree_back.dto.BargainOrderRequestDto;
 import com.ssackthree.ssackthree_back.entity.BargainOrderEntity;
 import com.ssackthree.ssackthree_back.repository.BargainOrderRepository;
@@ -9,6 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -28,5 +33,31 @@ public class BargainOrderService {
                 .status("A")
                 .build();
         bargainOrderRepository.save(bargainOrderEntity);
+    }
+
+    public List<BargainListResponseDto> bargainList(long menuId){
+        Optional<List<BargainOrderEntity>> bargainOrderEntityList = bargainOrderRepository.findByMenuEntityId(menuId);
+        List<BargainListResponseDto> bargainListResponseDtoList = new ArrayList<>();
+
+        if(bargainOrderEntityList.isPresent()){
+            for(BargainOrderEntity bargainOrder : bargainOrderEntityList.get()){
+                // 프로필 이미지 없는 경우 처리
+                String userProfileImageUrl = "";
+                if(bargainOrder.getUserEntity().getCustomerProfileFileEntity() != null){
+                    userProfileImageUrl = bargainOrder.getUserEntity().getCustomerProfileFileEntity().getFilePath();
+                }
+
+
+                BargainListResponseDto bargainListResponseDto = BargainListResponseDto.builder()
+                        .bargainPrice(bargainOrder.getBargainPrice())
+                        .proposerNickname(bargainOrder.getUserEntity().getRepName())
+                        .proposerImageUrl(userProfileImageUrl)
+                        .userId(bargainOrder.getUserEntity().getId())
+                        .build();
+                bargainListResponseDtoList.add(bargainListResponseDto);
+            }
+        }
+
+        return bargainListResponseDtoList;
     }
 }
