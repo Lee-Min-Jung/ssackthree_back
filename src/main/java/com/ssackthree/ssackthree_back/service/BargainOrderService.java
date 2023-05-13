@@ -47,11 +47,13 @@ public class BargainOrderService {
                     userProfileImageUrl = bargainOrder.getUserEntity().getCustomerProfileFileEntity().getFilePath();
                 }
 
+                int transactionSuccessCount = getTransactionSuccessCount(bargainOrder);
 
                 BargainListResponseDto bargainListResponseDto = BargainListResponseDto.builder()
                         .bargainPrice(bargainOrder.getBargainPrice())
                         .proposerNickname(bargainOrder.getUserEntity().getRepName())
                         .proposerImageUrl(userProfileImageUrl)
+                        .transactionSuccessCount(transactionSuccessCount)
                         .userId(bargainOrder.getUserEntity().getId())
                         .build();
                 bargainListResponseDtoList.add(bargainListResponseDto);
@@ -59,5 +61,13 @@ public class BargainOrderService {
         }
 
         return bargainListResponseDtoList;
+    }
+
+    // 흥정 거래 성공 횟수 구하기
+    public int getTransactionSuccessCount(BargainOrderEntity bargainOrderEntity){
+        long menuId = bargainOrderEntity.getMenuEntity().getId();
+        long userId = bargainOrderEntity.getUserEntity().getId();
+
+        return bargainOrderRepository.countByMenuEntityIdAndUserEntityIdAndStatus(menuId, userId, "C");
     }
 }

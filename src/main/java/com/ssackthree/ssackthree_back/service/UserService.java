@@ -43,8 +43,6 @@ public class UserService {
 
 
 
-    @Value("${upload-path}")
-    private String uploadPath;
 
     public void join(JoinRequestDto joinRequestDto) throws Exception{
         RoleEnum role = joinRequestDto.getRole().equals("customer") ? RoleEnum.ROLE_CUSTOMER : RoleEnum.ROLE_STORE;

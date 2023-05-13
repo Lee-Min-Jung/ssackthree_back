@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface BargainOrderRepository extends JpaRepository<BargainOrderEntity, Long> {
 
     Optional<List<BargainOrderEntity>> findByMenuEntityId(long menuId);
+    int countByMenuEntityIdAndUserEntityIdAndStatus(Long menuId, Long userId, String status);
 }

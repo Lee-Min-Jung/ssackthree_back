@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BargainListResponseDto {
+
+    private int transactionSuccessCount;
     private int bargainPrice;
     private String proposerNickname;
     private String proposerImageUrl;
