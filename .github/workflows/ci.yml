@@ -62,6 +62,10 @@ jobs:
           echo "cloud.aws.stack.auto-=false" >> src/main/resources/application.properties
           echo "logging.level.org.springframework.web.multipart.support=ERROR" >> src/main/resources/application.properties
 
+      - name: Build JAR with application.properties
+        run: ./gradlew bootJar
+        shell: bash
+
       - name: Build Docker image
         run: docker build -t lmj174/ssackthree:1.0 .
         shell: bash
