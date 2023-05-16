@@ -32,6 +32,7 @@ public class CustomerController {
         return customerService.getProfile(userId);
     }
 
+
     @PostMapping(path = "/register/location")
     public void registerLocation(@RequestBody SetLocationRequestDto setLocationRequestDto) throws Exception {
         customerService.registerLocation(setLocationRequestDto);
