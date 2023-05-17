@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -191,6 +190,35 @@ public class MenuService {
                 }
             }
         }
+    }
+
+    // 점주 홈페이지 화면 메뉴 리스트
+    public List<StoreMenuListResponseDto> getStoreMenuList(long userId, StoreMenuListRequestDto storeMenuListRequestDto){
+        List<StoreMenuListResponseDto> storeMenuListResponseDtoList = new ArrayList<>();
+
+        // userId별 메뉴 찾기
+        long storeId = storeRepository.findByUserEntityId(userId).get().getId();
+        Optional<List<MenuEntity>> menuEntityList = menuRepository.findByStoreEntityIdAndIsBargainning(storeId, storeMenuListRequestDto.getIsBargain());
+
+        // 메뉴 리스트 생성
+        if(menuEntityList.isPresent()){
+            for(MenuEntity menu : menuEntityList.get()){
+                StoreMenuListResponseDto storeMenuListResponseDto = StoreMenuListResponseDto.builder()
+                        .menuId(menu.getId())
+                        .name(menu.getName())
+                        .originalPrice(menu.getOriginalPrice())
+                        .discountedPrice(menu.getDiscountedPrice())
+                        .imageUrl(menu.getMenuFileEntity().get(0).getFilePath())
+                        .proposerCount(menu.getBargainOrderEntityList().size())
+                        .build();
+                storeMenuListResponseDtoList.add(storeMenuListResponseDto);
+            }
+        }
+
+        return storeMenuListResponseDtoList;
+
+
+
     }
 
     public List<MenuInDistanceResponseDto> getMenuListInDistance(HomePageRequestDto homePageRequestDto){

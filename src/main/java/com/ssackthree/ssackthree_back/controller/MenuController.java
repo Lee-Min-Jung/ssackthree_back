@@ -1,9 +1,6 @@
 package com.ssackthree.ssackthree_back.controller;
 
-import com.ssackthree.ssackthree_back.dto.HomePageRequestDto;
-import com.ssackthree.ssackthree_back.dto.MenuDetailResponseDto;
-import com.ssackthree.ssackthree_back.dto.MenuInDistanceResponseDto;
-import com.ssackthree.ssackthree_back.dto.MenuRegisterRequestDto;
+import com.ssackthree.ssackthree_back.dto.*;
 import com.ssackthree.ssackthree_back.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +31,11 @@ public class MenuController {
     @GetMapping(path = "get/detail/{menuId}")
     public MenuDetailResponseDto getMenuDetail(@PathVariable(name="menuId") long menuId){
         return menuService.getMenuDetail(menuId);
+    }
+
+    @GetMapping(path = "get/store/{userId}")
+    public List<StoreMenuListResponseDto> getStoreMenuList(@PathVariable(name="userId") long userId, @RequestBody StoreMenuListRequestDto storeMenuListRequestDto){
+        return menuService.getStoreMenuList(userId, storeMenuListRequestDto);
     }
 
 }
