@@ -2,7 +2,10 @@ package com.ssackthree.ssackthree_back.service;
 
 import com.ssackthree.ssackthree_back.dto.BargainListResponseDto;
 import com.ssackthree.ssackthree_back.dto.BargainOrderRequestDto;
+import com.ssackthree.ssackthree_back.dto.BeforeOrderResponseDto;
 import com.ssackthree.ssackthree_back.entity.BargainOrderEntity;
+import com.ssackthree.ssackthree_back.entity.MenuBargainningEntity;
+import com.ssackthree.ssackthree_back.entity.MenuEntity;
 import com.ssackthree.ssackthree_back.repository.BargainOrderRepository;
 import com.ssackthree.ssackthree_back.repository.MenuRepository;
 import com.ssackthree.ssackthree_back.repository.UserRepository;
@@ -74,8 +77,35 @@ public class BargainOrderService {
 
     }
 
+    //todo 이 부분은 주문과 흥정 공통이기 때문에 order로 묶으면 좋을듯
+    // 구매하러가기 눌렀을 때
+    public BeforeOrderResponseDto beforeOrder(long menuId){
+        Optional<MenuEntity> menu = menuRepository.findById(menuId);
+        if(menu.isPresent()){
+            // 흥정 처리
+            String bargainEndTime = "";
+            if(menu.get().getMenuBargainningEntity() != null){
+                bargainEndTime = String.valueOf(menu.get().getMenuBargainningEntity().getBargainEnd());
+            }
+            BeforeOrderResponseDto beforeOrderResponseDto = BeforeOrderResponseDto.builder()
+                    .menuName(menu.get().getName())
+                    .saleEndTime(menu.get().getEndTime().toString())
+                    .menuPrice(menu.get().getDiscountedPrice())
+                    .bargainEndTime(bargainEndTime)
+                    .maxBargainPrice(getMaxBargainPrice(menuId))
+                    .build();
+            return beforeOrderResponseDto;
+        }
+        return null;
+
+    }
+
     // 메뉴별 흥정 최고가
     public int getMaxBargainPrice(long menuId){
-        return bargainOrderRepository.findMaxBargainPrice(menuId);
+        Optional<Integer> maxBargainPrice = bargainOrderRepository.findMaxBargainPrice(menuId);
+        if(maxBargainPrice.isPresent()){
+            return maxBargainPrice.get();
+        }
+        return 0;
     }
 }

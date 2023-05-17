@@ -2,6 +2,7 @@ package com.ssackthree.ssackthree_back.controller;
 
 import com.ssackthree.ssackthree_back.dto.BargainListResponseDto;
 import com.ssackthree.ssackthree_back.dto.BargainOrderRequestDto;
+import com.ssackthree.ssackthree_back.dto.BeforeOrderResponseDto;
 import com.ssackthree.ssackthree_back.service.BargainOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +28,8 @@ public class BargainOrderController {
         return bargainOrderService.bargainList(menuId);
     }
 
-    @GetMapping("/max/{menuId}")
-    public int maxBargainPrice(@PathVariable(name = "menuId") long menuId){
-        return bargainOrderService.getMaxBargainPrice(menuId);
+    @GetMapping("/before/{menuId}")
+    public BeforeOrderResponseDto maxBargainPrice(@PathVariable(name = "menuId") long menuId){
+        return bargainOrderService.beforeOrder(menuId);
     }
 }
