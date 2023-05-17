@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
@@ -59,8 +60,8 @@ public class StoreService {
                 .detailAddress(storeRegisterRequestDto.getDetailAddress())
                 .zipcode(storeRegisterRequestDto.getZipcode())
                 .phoneNumber(storeRegisterRequestDto.getPhoneNumber())
-                .startTime(storeRegisterRequestDto.getStartTime())
-                .endTime(storeRegisterRequestDto.getEndTime())
+                .startTime(LocalTime.parse(storeRegisterRequestDto.getStartTime()))
+                .endTime(LocalTime.parse(storeRegisterRequestDto.getEndTime()))
                 .holiday(storeRegisterRequestDto.getHoliday())
                 .introduce(storeRegisterRequestDto.getIntroduce())
                 .userEntity(user.get())
@@ -166,8 +167,8 @@ public class StoreService {
                 .detailAddress(storeRegisterRequestDto.getDetailAddress())
                 .zipcode(storeRegisterRequestDto.getZipcode())
                 .phoneNumber(storeRegisterRequestDto.getPhoneNumber())
-                .startTime(storeRegisterRequestDto.getStartTime())
-                .endTime(storeRegisterRequestDto.getEndTime())
+                .startTime(LocalTime.parse(storeRegisterRequestDto.getStartTime()))
+                .endTime(LocalTime.parse(storeRegisterRequestDto.getEndTime()))
                 .holiday(storeRegisterRequestDto.getHoliday())
                 .introduce(storeRegisterRequestDto.getIntroduce())
                 .userEntity(user.get())

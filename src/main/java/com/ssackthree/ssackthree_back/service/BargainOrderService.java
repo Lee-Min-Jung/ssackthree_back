@@ -65,9 +65,10 @@ public class BargainOrderService {
 
     // 흥정 거래 성공 횟수 구하기
     public int getTransactionSuccessCount(BargainOrderEntity bargainOrderEntity){
-        long menuId = bargainOrderEntity.getMenuEntity().getId();
         long userId = bargainOrderEntity.getUserEntity().getId();
+        long storeId = bargainOrderEntity.getMenuEntity().getStoreEntity().getId();
+        return bargainOrderRepository.findSuccessTransactionCount(userId, storeId);
 
-        return bargainOrderRepository.countByMenuEntityIdAndUserEntityIdAndStatus(menuId, userId, "C");
+
     }
 }

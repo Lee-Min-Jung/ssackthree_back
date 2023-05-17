@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -37,7 +38,7 @@ public class MenuService {
 
     public static final double EARTH_RADIUS = 6371.0088; // 지구 반지름 상수 선언
 
-
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public void registerMenu(MenuRegisterRequestDto menuRegisterRequestDto, MultipartFile[] menus) throws IOException {
 
@@ -51,7 +52,7 @@ public class MenuService {
                 .discountedPrice(menuRegisterRequestDto.getDiscountedPrice())
                 .isBargainning(menuRegisterRequestDto.getIsBargainning())
                 .type(menuTypeEnum)
-                .endTime(menuRegisterRequestDto.getEndTime())
+                .endTime(LocalDateTime.parse(menuRegisterRequestDto.getEndTime(), formatter))
                 .storeEntity(storeEntity.get())
                 .createdDate(LocalDateTime.now())
                 .build();

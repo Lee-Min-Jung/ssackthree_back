@@ -20,8 +20,8 @@ public class StoreRegisterRequestDto {
     private String detailAddress;
     private String zipcode;
     private String phoneNumber;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private String startTime;
+    private String endTime;
     private String holiday;
     private String introduce;
     private long userId;
