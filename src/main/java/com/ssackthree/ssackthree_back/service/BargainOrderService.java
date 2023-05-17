@@ -25,6 +25,8 @@ public class BargainOrderService {
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
 
+
+    // 흥정 주문
     public void bargainOrder(BargainOrderRequestDto bargainOrderRequestDto){
         BargainOrderEntity bargainOrderEntity = BargainOrderEntity.builder()
                 .menuEntity(menuRepository.findById(bargainOrderRequestDto.getMenuId()).get())
@@ -35,6 +37,7 @@ public class BargainOrderService {
         bargainOrderRepository.save(bargainOrderEntity);
     }
 
+    // 메뉴별 흥정 내역
     public List<BargainListResponseDto> bargainList(long menuId){
         Optional<List<BargainOrderEntity>> bargainOrderEntityList = bargainOrderRepository.findByMenuEntityId(menuId);
         List<BargainListResponseDto> bargainListResponseDtoList = new ArrayList<>();
@@ -69,6 +72,10 @@ public class BargainOrderService {
         long storeId = bargainOrderEntity.getMenuEntity().getStoreEntity().getId();
         return bargainOrderRepository.findSuccessTransactionCount(userId, storeId);
 
+    }
 
+    // 메뉴별 흥정 최고가
+    public int getMaxBargainPrice(long menuId){
+        return bargainOrderRepository.findMaxBargainPrice(menuId);
     }
 }

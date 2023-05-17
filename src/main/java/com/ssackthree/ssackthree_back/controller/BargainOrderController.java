@@ -26,4 +26,9 @@ public class BargainOrderController {
     public List<BargainListResponseDto> bargainOrder(@PathVariable(name = "menuId") long menuId){
         return bargainOrderService.bargainList(menuId);
     }
+
+    @GetMapping("/max/{menuId}")
+    public int maxBargainPrice(@PathVariable(name = "menuId") long menuId){
+        return bargainOrderService.getMaxBargainPrice(menuId);
+    }
 }

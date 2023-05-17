@@ -17,4 +17,7 @@ public interface BargainOrderRepository extends JpaRepository<BargainOrderEntity
 
     @Query("select count(bo.id) from BargainOrderEntity bo where bo.menuEntity.storeEntity.id = :storeId and bo.userEntity.id = :userId and bo.status = 'C'")
     int findSuccessTransactionCount(@Param("userId") long userId, @Param("storeId") long storeId);
+
+    @Query("select max(bo.bargainPrice) from BargainOrderEntity bo where bo.menuEntity.id = :menuId")
+    int findMaxBargainPrice(@Param("menuId") long menuId);
 }
