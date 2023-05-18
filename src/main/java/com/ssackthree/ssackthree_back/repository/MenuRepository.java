@@ -22,7 +22,12 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Long> {
     )
     List<Long> findIdsByIsBargainningAndTypeIn(@Param("isBargainning") String isBargainning, @Param("typeList") List<MenuTypeEnum> typeList);
 
-    Optional<List<MenuEntity>> findByStoreEntityIdAndIsBargainning(long storeId, String isBargainning);
+    @Query("select m " +
+            "from MenuEntity m " +
+            "where (m.isBargainning = :isBargainning) " +
+            "and (m.storeEntity.id = :storeId) " +
+            "and (m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.ORDER_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_ING)")
+    Optional<List<MenuEntity>> findByStoreEntityIdAndIsBargainningAndMenuStatus(long storeId, @Param("isBargainning") String isBargainning);
 
 
 
