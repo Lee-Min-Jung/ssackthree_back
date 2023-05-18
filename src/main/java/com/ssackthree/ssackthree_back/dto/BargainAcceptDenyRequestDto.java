@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BargainAcceptRequestDto {
+public class BargainAcceptDenyRequestDto {
     long userId;
     long menuId;
 }

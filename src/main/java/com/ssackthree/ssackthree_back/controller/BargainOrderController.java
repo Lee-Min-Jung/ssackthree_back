@@ -1,6 +1,6 @@
 package com.ssackthree.ssackthree_back.controller;
 
-import com.ssackthree.ssackthree_back.dto.BargainAcceptRequestDto;
+import com.ssackthree.ssackthree_back.dto.BargainAcceptDenyRequestDto;
 import com.ssackthree.ssackthree_back.dto.BargainListResponseDto;
 import com.ssackthree.ssackthree_back.dto.BargainOrderRequestDto;
 import com.ssackthree.ssackthree_back.dto.BeforeOrderResponseDto;
@@ -35,7 +35,12 @@ public class BargainOrderController {
     }
 
     @PostMapping("/accept")
-    public void acceptBargain(@RequestBody BargainAcceptRequestDto bargainAcceptRequestDto){
+    public void acceptBargain(@RequestBody BargainAcceptDenyRequestDto bargainAcceptRequestDto){
         bargainOrderService.acceptBargain(bargainAcceptRequestDto);
+    }
+
+    @PostMapping("/deny")
+    public void denyBargain(@RequestBody BargainAcceptDenyRequestDto bargainDenyRequestDto){
+        bargainOrderService.denyBargain(bargainDenyRequestDto);
     }
 }

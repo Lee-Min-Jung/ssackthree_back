@@ -1,6 +1,6 @@
 package com.ssackthree.ssackthree_back.service;
 
-import com.ssackthree.ssackthree_back.dto.BargainAcceptRequestDto;
+import com.ssackthree.ssackthree_back.dto.BargainAcceptDenyRequestDto;
 import com.ssackthree.ssackthree_back.dto.BargainListResponseDto;
 import com.ssackthree.ssackthree_back.dto.BargainOrderRequestDto;
 import com.ssackthree.ssackthree_back.dto.BeforeOrderResponseDto;
@@ -113,8 +113,14 @@ public class BargainOrderService {
         return 0;
     }
 
+    // 흥정 거절
+    public void denyBargain(BargainAcceptDenyRequestDto bargainDenyRequestDto){
+        // 흥정 거절된 메뉴의 흥정 주문 상태 바꾸기
+        changeBargainOrderStatus(bargainDenyRequestDto, "F");
+
+    }
     // 흥정 수락
-    public void acceptBargain(BargainAcceptRequestDto bargainAcceptRequestDto){
+    public void acceptBargain(BargainAcceptDenyRequestDto bargainAcceptRequestDto){
         // 흥정 수락된 메뉴에 흥정 제안한 다른 메뉴의 흥정 주문 상태 바꾸기
         Optional<List<BargainOrderEntity>> bargainOrderEntityList = bargainOrderRepository.findByMenuEntityId(bargainAcceptRequestDto.getMenuId());
         if(bargainOrderEntityList.isPresent()){
@@ -131,17 +137,7 @@ public class BargainOrderService {
         }
 
         // 흥정 수락된 메뉴의 흥정 주문 상태 바꾸기
-        Optional<BargainOrderEntity> bargainOrderEntity = bargainOrderRepository.findByMenuEntityIdAndUserEntityId(bargainAcceptRequestDto.getMenuId(), bargainAcceptRequestDto.getUserId());
-        if(bargainOrderEntity.isPresent()){
-            BargainOrderEntity bargainOrder = BargainOrderEntity.builder()
-                    .id(bargainOrderEntity.get().getId())
-                    .bargainPrice(bargainOrderEntity.get().getBargainPrice())
-                    .status("T")
-                    .menuEntity(bargainOrderEntity.get().getMenuEntity())
-                    .userEntity(bargainOrderEntity.get().getUserEntity())
-                    .build();
-            bargainOrderRepository.save(bargainOrder);
-        }
+        changeBargainOrderStatus(bargainAcceptRequestDto, "T");
 
         // 흥정 수락된 메뉴의 메뉴 상태 바꾸기
         Optional<MenuStatusEntity> menuStatusEntity = menuStatusRepository.findByMenuEntityId(bargainAcceptRequestDto.getMenuId());
@@ -152,6 +148,21 @@ public class BargainOrderService {
                     .menuEntity(menuStatusEntity.get().getMenuEntity())
                     .build();
             menuStatusRepository.save(menuStatus);
+        }
+    }
+
+    public void changeBargainOrderStatus(BargainAcceptDenyRequestDto bargainAcceptDenyRequestDto, String status){
+        Optional<BargainOrderEntity> bargainOrderEntity = bargainOrderRepository.findByMenuEntityIdAndUserEntityId(bargainAcceptDenyRequestDto.getMenuId(), bargainAcceptDenyRequestDto.getUserId());
+        if(bargainOrderEntity.isPresent()){
+            BargainOrderEntity bargainOrder = BargainOrderEntity.builder()
+                    .id(bargainOrderEntity.get().getId())
+                    .bargainPrice(bargainOrderEntity.get().getBargainPrice())
+                    .status(status)
+                    .menuEntity(bargainOrderEntity.get().getMenuEntity())
+                    .userEntity(bargainOrderEntity.get().getUserEntity())
+                    .build();
+            bargainOrderRepository.save(bargainOrder);
+            log.info("??????");
         }
     }
 }
