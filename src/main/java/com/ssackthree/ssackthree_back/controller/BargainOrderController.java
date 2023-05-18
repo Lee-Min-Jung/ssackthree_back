@@ -1,5 +1,6 @@
 package com.ssackthree.ssackthree_back.controller;
 
+import com.ssackthree.ssackthree_back.dto.BargainAcceptRequestDto;
 import com.ssackthree.ssackthree_back.dto.BargainListResponseDto;
 import com.ssackthree.ssackthree_back.dto.BargainOrderRequestDto;
 import com.ssackthree.ssackthree_back.dto.BeforeOrderResponseDto;
@@ -31,5 +32,10 @@ public class BargainOrderController {
     @GetMapping("/before/{menuId}")
     public BeforeOrderResponseDto maxBargainPrice(@PathVariable(name = "menuId") long menuId){
         return bargainOrderService.beforeOrder(menuId);
+    }
+
+    @PostMapping("/accept")
+    public void acceptBargain(@RequestBody BargainAcceptRequestDto bargainAcceptRequestDto){
+        bargainOrderService.acceptBargain(bargainAcceptRequestDto);
     }
 }
