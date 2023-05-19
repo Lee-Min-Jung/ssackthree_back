@@ -4,15 +4,9 @@ import com.ssackthree.ssackthree_back.dto.KakaoPayApproveResponseDto;
 import com.ssackthree.ssackthree_back.dto.KakaoPayReadyResponseDto;
 import com.ssackthree.ssackthree_back.dto.KakaoPayRequestDto;
 import com.ssackthree.ssackthree_back.dto.KakaoPayResultResponseDto;
-import com.ssackthree.ssackthree_back.entity.MenuEntity;
-import com.ssackthree.ssackthree_back.entity.MenuStatusEntity;
-import com.ssackthree.ssackthree_back.entity.OrderEntity;
-import com.ssackthree.ssackthree_back.entity.StoreEntity;
+import com.ssackthree.ssackthree_back.entity.*;
 import com.ssackthree.ssackthree_back.enums.MenuStatusEnum;
-import com.ssackthree.ssackthree_back.repository.MenuRepository;
-import com.ssackthree.ssackthree_back.repository.MenuStatusRepository;
-import com.ssackthree.ssackthree_back.repository.OrderRepository;
-import com.ssackthree.ssackthree_back.repository.UserRepository;
+import com.ssackthree.ssackthree_back.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +42,7 @@ public class KakaoPayService {
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
     private final MenuStatusRepository menuStatusRepository;
+    private final BargainOrderRepository bargainOrderRepository;
 
     public KakaoPayReadyResponseDto payReady(KakaoPayRequestDto kakaoPayRequestDto){
         // orderEntity 생성
@@ -127,7 +122,7 @@ public class KakaoPayService {
                 requestEntity,
                 KakaoPayApproveResponseDto.class);
 
-        // 주문한 메뉴 상태 변경
+        // 주문한 메뉴 상태 변경 - 흥정인지 아닌지 확인한 후 다르게 변경해줘야 함
         updateMenuStatus(approveResponse);
 
 
@@ -140,13 +135,47 @@ public class KakaoPayService {
 
     public void updateMenuStatus(KakaoPayApproveResponseDto approveResponse){
         MenuEntity menuEntity = orderRepository.findById(Long.parseLong(approveResponse.getPartner_order_id())).get().getMenuEntity();
-        MenuStatusEntity menuStatusEntity = menuEntity.getMenuStatusEntity();
-        MenuStatusEntity updatedMenuStatusEntity = MenuStatusEntity.builder()
-                .menuStatus(MenuStatusEnum.ORDER_COMPLETED)
-                .id(menuStatusEntity.getId())
-                .menuEntity(menuEntity)
-                .build();
-        menuStatusRepository.save(updatedMenuStatusEntity);
+
+        // 흥정이 아닌 경우
+        if(menuEntity.getIsBargainning().equals("F")){
+            // 메뉴 상태 바꿈
+            MenuStatusEntity menuStatusEntity = menuEntity.getMenuStatusEntity();
+            MenuStatusEntity updatedMenuStatusEntity = MenuStatusEntity.builder()
+                    .menuStatus(MenuStatusEnum.ORDER_COMPLETED)
+                    .id(menuStatusEntity.getId())
+                    .menuEntity(menuEntity)
+                    .build();
+            menuStatusRepository.save(updatedMenuStatusEntity);
+        // 흥정인 경우
+        }else{
+            // 메뉴 상태 바꿈
+            MenuStatusEntity menuStatusEntity = menuEntity.getMenuStatusEntity();
+            MenuStatusEntity updatedMenuStatusEntity = MenuStatusEntity.builder()
+                    .menuStatus(MenuStatusEnum.BARGAIN_COMPLETED)
+                    .id(menuStatusEntity.getId())
+                    .menuEntity(menuEntity)
+                    .build();
+            menuStatusRepository.save(updatedMenuStatusEntity);
+
+            // 흥정 주문의 메뉴 상태 바꿈
+            long menuId = menuEntity.getId();
+            long userId = Long.parseLong(approveResponse.getPartner_user_id());
+            Optional<BargainOrderEntity> bargainOrder = bargainOrderRepository.findByMenuEntityIdAndUserEntityId(menuId, userId);
+            if(bargainOrder.isPresent()){
+                BargainOrderEntity updatedBargainOrder = BargainOrderEntity.builder()
+                        .id(bargainOrder.get().getId())
+                        .status("C")
+                        .menuEntity(bargainOrder.get().getMenuEntity())
+                        .userEntity(bargainOrder.get().getUserEntity())
+                        .bargainPrice(bargainOrder.get().getBargainPrice())
+                        .build();
+                bargainOrderRepository.save(updatedBargainOrder);
+            }
+
+        }
+
+
+
     }
 
     public KakaoPayResultResponseDto getKakaoPayResultResponseDto(long orderId){
