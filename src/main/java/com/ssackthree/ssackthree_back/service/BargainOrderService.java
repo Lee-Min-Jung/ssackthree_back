@@ -7,6 +7,7 @@ import com.ssackthree.ssackthree_back.dto.BeforeOrderResponseDto;
 import com.ssackthree.ssackthree_back.entity.BargainOrderEntity;
 import com.ssackthree.ssackthree_back.entity.MenuEntity;
 import com.ssackthree.ssackthree_back.entity.MenuStatusEntity;
+import com.ssackthree.ssackthree_back.enums.BargainStatusEnum;
 import com.ssackthree.ssackthree_back.enums.MenuStatusEnum;
 import com.ssackthree.ssackthree_back.repository.BargainOrderRepository;
 import com.ssackthree.ssackthree_back.repository.MenuRepository;
@@ -39,7 +40,7 @@ public class BargainOrderService {
                 .menuEntity(menuRepository.findById(bargainOrderRequestDto.getMenuId()).get())
                 .userEntity(userRepository.findById(bargainOrderRequestDto.getUserId()).get())
                 .bargainPrice(bargainOrderRequestDto.getBargainPrice())
-                .status("A")
+                .status(BargainStatusEnum.BARGAIN_ACTIVE)
                 .build();
         bargainOrderRepository.save(bargainOrderEntity);
     }
@@ -116,7 +117,7 @@ public class BargainOrderService {
     // 흥정 거절
     public void denyBargain(BargainAcceptDenyRequestDto bargainDenyRequestDto){
         // 흥정 거절된 메뉴의 흥정 주문 상태 바꾸기
-        changeBargainOrderStatus(bargainDenyRequestDto, "F");
+        changeBargainOrderStatus(bargainDenyRequestDto, BargainStatusEnum.BARGAIN_FAIL);
 
     }
     // 흥정 수락
@@ -130,14 +131,14 @@ public class BargainOrderService {
                         .menuEntity(bargainOrder.getMenuEntity())
                         .userEntity(bargainOrder.getUserEntity())
                         .bargainPrice(bargainOrder.getBargainPrice())
-                        .status("F")
+                        .status(BargainStatusEnum.BARGAIN_FAIL)
                         .build();
                 bargainOrderRepository.save(bargainOrderEntity);
             }
         }
 
         // 흥정 수락된 메뉴의 흥정 주문 상태 바꾸기
-        changeBargainOrderStatus(bargainAcceptRequestDto, "T");
+        changeBargainOrderStatus(bargainAcceptRequestDto, BargainStatusEnum.BARGAIN_SUCCESS);
 
         // 흥정 수락된 메뉴의 메뉴 상태 바꾸기
         Optional<MenuStatusEntity> menuStatusEntity = menuStatusRepository.findByMenuEntityId(bargainAcceptRequestDto.getMenuId());
@@ -151,18 +152,17 @@ public class BargainOrderService {
         }
     }
 
-    public void changeBargainOrderStatus(BargainAcceptDenyRequestDto bargainAcceptDenyRequestDto, String status){
+    public void changeBargainOrderStatus(BargainAcceptDenyRequestDto bargainAcceptDenyRequestDto, BargainStatusEnum bargainStatusEnum){
         Optional<BargainOrderEntity> bargainOrderEntity = bargainOrderRepository.findByMenuEntityIdAndUserEntityId(bargainAcceptDenyRequestDto.getMenuId(), bargainAcceptDenyRequestDto.getUserId());
         if(bargainOrderEntity.isPresent()){
             BargainOrderEntity bargainOrder = BargainOrderEntity.builder()
                     .id(bargainOrderEntity.get().getId())
                     .bargainPrice(bargainOrderEntity.get().getBargainPrice())
-                    .status(status)
+                    .status(bargainStatusEnum)
                     .menuEntity(bargainOrderEntity.get().getMenuEntity())
                     .userEntity(bargainOrderEntity.get().getUserEntity())
                     .build();
             bargainOrderRepository.save(bargainOrder);
-            log.info("??????");
         }
     }
 }

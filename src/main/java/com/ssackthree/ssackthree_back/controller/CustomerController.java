@@ -1,14 +1,15 @@
 package com.ssackthree.ssackthree_back.controller;
 
+import com.ssackthree.ssackthree_back.dto.OrderBargainHistoryRequestDto;
+import com.ssackthree.ssackthree_back.dto.OrderBargainHistoryResponseDto;
 import com.ssackthree.ssackthree_back.dto.SetLocationRequestDto;
 import com.ssackthree.ssackthree_back.service.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,5 +39,8 @@ public class CustomerController {
         customerService.registerLocation(setLocationRequestDto);
     }
 
-
+    @GetMapping(path = "/orderBargain/history")
+    public List<OrderBargainHistoryResponseDto> getOrderBargainHistory(@RequestBody OrderBargainHistoryRequestDto orderBargainHistoryRequestDto) throws Exception{
+        return customerService.getOrderBargainHistory(orderBargainHistoryRequestDto);
+    }
 }

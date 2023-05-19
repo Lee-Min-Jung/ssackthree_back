@@ -27,4 +27,9 @@ public class PaymentController {
     public KakaoPayApproveResponseDto afterPayRequest(@RequestParam("pg_token") String pgToken, @RequestParam("orderId") String orderId){
         return kakaoPayService.payApprove(pgToken, orderId);
     }
+
+    @GetMapping("/kakaopay/cancel")
+    public void cancelPayRequest(@RequestParam("orderId") String orderId){
+        kakaoPayService.payCancel(orderId);
+    }
 }

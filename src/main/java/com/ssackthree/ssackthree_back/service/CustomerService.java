@@ -1,30 +1,24 @@
 package com.ssackthree.ssackthree_back.service;
 
-import com.google.maps.GeoApiContext;
-import com.google.maps.GeocodingApi;
-import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
+import com.ssackthree.ssackthree_back.dto.OrderBargainHistoryRequestDto;
+import com.ssackthree.ssackthree_back.dto.OrderBargainHistoryResponseDto;
 import com.ssackthree.ssackthree_back.dto.SetLocationRequestDto;
-import com.ssackthree.ssackthree_back.entity.CustomerProfileFileEntity;
-import com.ssackthree.ssackthree_back.entity.StoreLocationEntity;
-import com.ssackthree.ssackthree_back.entity.UserEntity;
-import com.ssackthree.ssackthree_back.entity.UserLocationEntity;
-import com.ssackthree.ssackthree_back.repository.CustomerProfileFileRepository;
-import com.ssackthree.ssackthree_back.repository.UserLocationRepository;
-import com.ssackthree.ssackthree_back.repository.UserRepository;
+import com.ssackthree.ssackthree_back.entity.*;
+import com.ssackthree.ssackthree_back.enums.MenuStatusEnum;
+import com.ssackthree.ssackthree_back.repository.*;
 import com.ssackthree.ssackthree_back.util.FileService;
 import com.ssackthree.ssackthree_back.util.LocationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +31,9 @@ public class CustomerService {
     private final FileService fileService;
     private final UserLocationRepository userLocationRepository;
     private final LocationService locationService;
+    private final OrderRepository orderRepository;
+    private final BargainOrderRepository bargainOrderRepository;
 
-
-
-    @Transactional
     public void uploadProfile(MultipartFile file, long userId) throws IOException {
         String savedFileName = fileService.getSavedFileName(file);
 
@@ -117,6 +110,44 @@ public class CustomerService {
                     .build();
             userLocationRepository.save(userLocationEntity);
         }
+    }
+
+    public List<OrderBargainHistoryResponseDto> getOrderBargainHistory(OrderBargainHistoryRequestDto orderBargainHistoryRequestDto){
+        long userId = orderBargainHistoryRequestDto.getUserId();
+        String type = orderBargainHistoryRequestDto.getType();
+        List<OrderBargainHistoryResponseDto> orderBargainHistoryResponseDtoList = new ArrayList<>();
+
+        // 흥정 아닌 경우
+        if(type.equals("order")){
+            List<OrderEntity> orderEntityList = userRepository.findById(userId).get().getOrderEntityList();
+            for(OrderEntity order : orderEntityList){
+                if(order.getMenuEntity().getMenuStatusEntity().getMenuStatus().equals(MenuStatusEnum.ORDER_ING) || order.getMenuEntity().getMenuStatusEntity().getMenuStatus().equals(MenuStatusEnum.ORDER_COMPLETED)){
+                    OrderBargainHistoryResponseDto orderBargainHistoryResponseDto = OrderBargainHistoryResponseDto.builder()
+                            .menuName(order.getMenuEntity().getName())
+                            .storeName(order.getMenuEntity().getStoreEntity().getStoreName())
+                            .originalPrice(order.getMenuEntity().getOriginalPrice())
+                            .discountedPrice(order.getMenuEntity().getDiscountedPrice())
+                            .status(order.getStatus().toString())
+                            .build();
+                    orderBargainHistoryResponseDtoList.add(orderBargainHistoryResponseDto);
+                }
+
+            }
+        // 흥정인 경우
+        }else{
+            List<BargainOrderEntity> bargainOrderEntityList = userRepository.findById(userId).get().getBargainOrderEntityList();
+            for(BargainOrderEntity bargainOrder : bargainOrderEntityList){
+                OrderBargainHistoryResponseDto orderBargainHistoryResponseDto = OrderBargainHistoryResponseDto.builder()
+                        .menuName(bargainOrder.getMenuEntity().getName())
+                        .storeName(bargainOrder.getMenuEntity().getStoreEntity().getStoreName())
+                        .originalPrice(bargainOrder.getMenuEntity().getOriginalPrice())
+                        .discountedPrice(bargainOrder.getBargainPrice())
+                        .status(bargainOrder.getStatus().toString())
+                        .build();
+                orderBargainHistoryResponseDtoList.add(orderBargainHistoryResponseDto);
+            }
+        }
+        return orderBargainHistoryResponseDtoList;
     }
 
 

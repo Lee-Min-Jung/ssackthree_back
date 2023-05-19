@@ -5,7 +5,9 @@ import com.ssackthree.ssackthree_back.dto.KakaoPayReadyResponseDto;
 import com.ssackthree.ssackthree_back.dto.KakaoPayRequestDto;
 import com.ssackthree.ssackthree_back.dto.KakaoPayResultResponseDto;
 import com.ssackthree.ssackthree_back.entity.*;
+import com.ssackthree.ssackthree_back.enums.BargainStatusEnum;
 import com.ssackthree.ssackthree_back.enums.MenuStatusEnum;
+import com.ssackthree.ssackthree_back.enums.OrderStatusEnum;
 import com.ssackthree.ssackthree_back.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +60,7 @@ public class KakaoPayService {
         parameters.add("total_amount", String.valueOf(kakaoPayRequestDto.getPrice()));
         parameters.add("tax_free_amount", "0");
         parameters.add("approval_url", "http://localhost:8080/api/payment/kakaopay/success"+"?orderId="+String.valueOf(order.getId())); // 결제승인시 넘어갈 url
-        parameters.add("cancel_url", "http://localhost:8080/api/payment/kakaopay/cancel"); // 결제취소시 넘어갈 url
+        parameters.add("cancel_url", "http://localhost:8080/api/payment/kakaopay/cancel"+"?orderId="+String.valueOf(order.getId())); // 결제취소시 넘어갈 url
         parameters.add("fail_url", "http://localhost:8080/api/payment/kakaopay/fail"); // 결제 실패시 넘어갈 url
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
 
@@ -75,7 +77,7 @@ public class KakaoPayService {
 
     public OrderEntity saveOrderEntity(KakaoPayRequestDto kakaoPayRequestDto){
         OrderEntity order = OrderEntity.builder()
-                .status("T")
+                .status(OrderStatusEnum.READY)
                 .menuEntity(menuRepository.findById(kakaoPayRequestDto.getMenuId()).get())
                 .userEntity(userRepository.findById(kakaoPayRequestDto.getUserId()).get())
                 .build();
@@ -114,7 +116,7 @@ public class KakaoPayService {
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
 
-        // 요청 보내기기
+        // 요청 보내기
        RestTemplate restTemplate = new RestTemplate();
 
         KakaoPayApproveResponseDto approveResponse = restTemplate.postForObject(
@@ -125,12 +127,46 @@ public class KakaoPayService {
         // 주문한 메뉴 상태 변경 - 흥정인지 아닌지 확인한 후 다르게 변경해줘야 함
         updateMenuStatus(approveResponse);
 
+        // 결제 완료했으니 주문 상태 바꾸기
+        updateOrderStatus(approveResponse);
+
 
         // 주문 세부 정보 저장
         approveResponse.setKakaoPayResultResponseDto(getKakaoPayResultResponseDto(Long.parseLong(approveResponse.getPartner_order_id())));
 
         return approveResponse;
 
+    }
+
+    public void payCancel(String orderId){
+        Optional<OrderEntity> order = orderRepository.findById(Long.parseLong(orderId));
+
+        if(order.isPresent()){
+            OrderEntity orderEntity = OrderEntity.builder()
+                    .id(order.get().getId())
+                    .userEntity(order.get().getUserEntity())
+                    .menuEntity(order.get().getMenuEntity())
+                    .tid(order.get().getTid())
+                    .status(OrderStatusEnum.CANCEL)
+                    .build();
+            orderRepository.save(orderEntity);
+        }
+    }
+
+    public void updateOrderStatus(KakaoPayApproveResponseDto approveResponse){
+        long orderId = Long.parseLong(approveResponse.getPartner_order_id());
+        Optional<OrderEntity> orderEntity = orderRepository.findById(orderId);
+
+        if(orderEntity.isPresent()){
+            OrderEntity order = OrderEntity.builder()
+                    .id(orderId)
+                    .userEntity(orderEntity.get().getUserEntity())
+                    .menuEntity(orderEntity.get().getMenuEntity())
+                    .tid(orderEntity.get().getTid())
+                    .status(OrderStatusEnum.COMPLETED)
+                    .build();
+            orderRepository.save(order);
+        }
     }
 
     public void updateMenuStatus(KakaoPayApproveResponseDto approveResponse){
@@ -164,7 +200,7 @@ public class KakaoPayService {
             if(bargainOrder.isPresent()){
                 BargainOrderEntity updatedBargainOrder = BargainOrderEntity.builder()
                         .id(bargainOrder.get().getId())
-                        .status("C")
+                        .status(BargainStatusEnum.BARGAIN_COMPLETED)
                         .menuEntity(bargainOrder.get().getMenuEntity())
                         .userEntity(bargainOrder.get().getUserEntity())
                         .bargainPrice(bargainOrder.get().getBargainPrice())

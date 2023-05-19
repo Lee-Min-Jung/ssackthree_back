@@ -15,6 +15,8 @@ public interface BargainOrderRepository extends JpaRepository<BargainOrderEntity
 
     Optional<List<BargainOrderEntity>> findByMenuEntityId(long menuId);
 
+    Optional<List<BargainOrderEntity>> findByUserEntityId(long userId);
+
     Optional<BargainOrderEntity> findByMenuEntityIdAndUserEntityId(long menuId, long userId);
 
 

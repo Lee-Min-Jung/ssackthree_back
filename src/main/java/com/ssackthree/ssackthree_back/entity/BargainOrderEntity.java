@@ -1,5 +1,6 @@
 package com.ssackthree.ssackthree_back.entity;
 
+import com.ssackthree.ssackthree_back.enums.BargainStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +21,8 @@ public class BargainOrderEntity {
     @Column(name = "bargain_order_id")
     private long id;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private BargainStatusEnum status;
 
     private int bargainPrice;
 

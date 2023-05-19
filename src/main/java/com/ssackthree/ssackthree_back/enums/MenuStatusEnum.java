@@ -5,4 +5,5 @@ public enum MenuStatusEnum {
     ORDER_COMPLETED,
     BARGAIN_ING,
     BARGAIN_COMPLETED,
+    BARGAIN_SUCCESS,
 }

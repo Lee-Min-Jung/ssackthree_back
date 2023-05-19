@@ -1,5 +1,6 @@
 package com.ssackthree.ssackthree_back.entity;
 
+import com.ssackthree.ssackthree_back.enums.OrderStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +21,9 @@ public class OrderEntity {
     @Column(name = "order_id")
     private long id;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatusEnum status;
+
     private String tid;
 
     @ManyToOne
