@@ -5,11 +5,9 @@ import com.ssackthree.ssackthree_back.dto.JoinRequestDto;
 import com.ssackthree.ssackthree_back.dto.LoginRequestDto;
 import com.ssackthree.ssackthree_back.dto.TokenResponseDto;
 import com.ssackthree.ssackthree_back.service.UserService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,5 +24,7 @@ public class UserController {
     public TokenResponseDto login(@RequestBody LoginRequestDto loginRequestDto) throws Exception{
         return userService.login(loginRequestDto);
     }
+
+
 
 }

@@ -49,4 +49,16 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity")
     private List<BargainOrderEntity> bargainOrderEntityList;
 
+    @OneToMany(mappedBy = "userEntity1")
+    private List<ChatRoomEntity> chatRoomEntityList1;
+
+    @OneToMany(mappedBy = "userEntity2")
+    private List<ChatRoomEntity> chatRoomEntityList2;
+
+    @OneToMany(mappedBy = "sender")
+    private List<ChatMessageEntity> sendMessageEntityList;
+
+    @OneToMany(mappedBy = "receiver")
+    private List<ChatMessageEntity> receiveMessageEntityList;
+
 }
