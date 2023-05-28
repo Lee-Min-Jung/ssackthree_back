@@ -170,7 +170,7 @@ public class MenuService {
 //        }
 //    }
 
-    @Scheduled(fixedRate = 60000) // 60초마다 실행
+//    @Scheduled(fixedRate = 60000) // 60초마다 실행
     public void updateBargainningEndTime(){
         log.info("*****************************************");
         List<MenuBargainningEntity> menuBargainningEntityList = menuBargainningRepository.findAll();
