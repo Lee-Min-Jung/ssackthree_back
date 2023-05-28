@@ -2,6 +2,8 @@ package com.ssackthree.ssackthree_back.controller;
 
 import com.ssackthree.ssackthree_back.dto.ChatMessageRequestDto;
 import com.ssackthree.ssackthree_back.dto.ChatRoomRequestDto;
+import com.ssackthree.ssackthree_back.dto.ChatRoomResponseDto;
+import com.ssackthree.ssackthree_back.entity.ChatRoomEntity;
 import com.ssackthree.ssackthree_back.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +20,8 @@ public class ChatController {
     private final ChatService chatService;
 
     @PostMapping(path = "/room")
-    public int createChatRoom(@RequestBody ChatRoomRequestDto chatRoomDto){
-        chatService.createChatRoom(chatRoomDto);
-        return 1;
+    public ChatRoomResponseDto createChatRoom(@RequestBody ChatRoomRequestDto chatRoomDto){
+        return chatService.createChatRoom(chatRoomDto);
     }
 
 //    @PostMapping(path = "/message")

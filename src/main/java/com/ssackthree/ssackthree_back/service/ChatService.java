@@ -3,6 +3,7 @@ package com.ssackthree.ssackthree_back.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssackthree.ssackthree_back.dto.ChatMessageRequestDto;
 import com.ssackthree.ssackthree_back.dto.ChatRoomRequestDto;
+import com.ssackthree.ssackthree_back.dto.ChatRoomResponseDto;
 import com.ssackthree.ssackthree_back.entity.ChatMessageEntity;
 import com.ssackthree.ssackthree_back.entity.ChatRoomEntity;
 import com.ssackthree.ssackthree_back.repository.ChatMessageRepository;
@@ -28,7 +29,7 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final ObjectMapper objectMapper;
 
-    public void createChatRoom(ChatRoomRequestDto chatRoomDto){
+    public ChatRoomResponseDto createChatRoom(ChatRoomRequestDto chatRoomDto){
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.builder()
                 .userEntity1(userRepository.findById(chatRoomDto.getUserId1()).get())
                 .userEntity2(userRepository.findById(chatRoomDto.getUserId2()).get())
@@ -36,6 +37,14 @@ public class ChatService {
                 .build();
 
         chatRoomRepository.save(chatRoomEntity);
+
+        ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto.builder()
+                .roomId(chatRoomEntity.getId())
+                .userId1(chatRoomDto.getUserId1())
+                .userId2(chatRoomDto.getUserId2())
+                .build();
+
+        return chatRoomResponseDto;
     }
 
     public void createChatMessage(ChatMessageRequestDto chatMessageRequestDto){
