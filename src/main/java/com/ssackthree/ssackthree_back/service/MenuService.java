@@ -227,7 +227,7 @@ public class MenuService {
         List<Long> menuIdListForBarginAndType = menuRepository.findIdsByIsBargainningAndTypeIn(homePageRequestDto.getIsBargainning(), homePageRequestDto.getTypeList());
 
         // 해당 유저가 설정한 위치 정보
-        Optional<UserLocationEntity> userLocation = userLocationRepository.findByUserEntityId(homePageRequestDto.getUserId());
+        Optional<UserLocationEntity> userLocation = userLocationRepository.findTopByUserEntityIdOrderByCreatedDateDesc(homePageRequestDto.getUserId());
         // 위의 조건 만족하면서 거리 안에 있는 id와 거리 리스트
         List<MenuIdDistance> idDistanceList = getMenuIdDistance(userLocation.get(), menuIdListForBarginAndType);
         List<Long> menuIdList = new ArrayList<>();

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface UserLocationRepository extends JpaRepository<UserLocationEntity, Long> {
-    Optional<UserLocationEntity> findByUserEntityId(long id);
+    Optional<UserLocationEntity> findTopByUserEntityIdOrderByCreatedDateDesc(Long userId);
 }
