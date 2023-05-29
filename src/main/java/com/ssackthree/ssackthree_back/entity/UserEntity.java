@@ -43,8 +43,8 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity")
     private List<OrderEntity> orderEntityList;
 
-    @OneToOne(mappedBy = "userEntity")
-    private UserLocationEntity userLocationEntity;
+    @OneToMany(mappedBy = "userEntity")
+    private List<UserLocationEntity> userLocationEntityList;
 
     @OneToMany(mappedBy = "userEntity")
     private List<BargainOrderEntity> bargainOrderEntityList;

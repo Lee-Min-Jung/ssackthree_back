@@ -24,7 +24,7 @@ public class UserLocationEntity {
     private double longitude;
     private int m;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 }
