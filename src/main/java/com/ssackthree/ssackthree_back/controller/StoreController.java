@@ -17,13 +17,15 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping(path = "register")
-    public void registerStore(@RequestPart(value="dto") StoreRegisterRequestDto storeRegisterRequestDto, @RequestPart(value="profile", required = false) MultipartFile profile, @RequestPart(value="menus", required = false) MultipartFile[] menus) throws Exception{
+    public int registerStore(@RequestPart(value="dto") StoreRegisterRequestDto storeRegisterRequestDto, @RequestPart(value="profile", required = false) MultipartFile profile, @RequestPart(value="menus", required = false) MultipartFile[] menus) throws Exception{
         storeService.registerStore(storeRegisterRequestDto, profile, menus);
+        return 1;
     }
 
     @PostMapping(path = "update")
-    public void updateStore(@RequestPart(value="dto") StoreRegisterRequestDto storeRegisterRequestDto, @RequestPart(value="profile", required = false) MultipartFile profile, @RequestPart(value="menus", required = false) MultipartFile[] menus) throws Exception{
+    public int updateStore(@RequestPart(value="dto") StoreRegisterRequestDto storeRegisterRequestDto, @RequestPart(value="profile", required = false) MultipartFile profile, @RequestPart(value="menus", required = false) MultipartFile[] menus) throws Exception{
         storeService.updateStore(storeRegisterRequestDto, profile, menus);
+        return 1;
     }
 
     @GetMapping(path = "get/{userId}")
@@ -34,12 +36,6 @@ public class StoreController {
     @GetMapping(path = "/profile/show/{userId}")
     public String getProfile(@PathVariable(name="userId") long userId) throws Exception{
         return storeService.getProfile(userId);
-    }
-
-
-    @GetMapping(path="/test")
-    public String test(){
-        return "test";
     }
 
 }

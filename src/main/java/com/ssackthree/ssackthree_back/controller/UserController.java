@@ -16,8 +16,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(path = "join")
-    public void join(@RequestBody JoinRequestDto joinRequestDto) throws Exception{
+    public int join(@RequestBody JoinRequestDto joinRequestDto) throws Exception{
         userService.join(joinRequestDto);
+        return 1;
     }
 
     @PostMapping(path = "login")

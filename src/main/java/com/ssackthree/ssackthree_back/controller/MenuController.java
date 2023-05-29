@@ -19,8 +19,9 @@ public class MenuController {
     private final MenuService menuService;
 
     @PostMapping(path = "register")
-    public void registerMenu(@RequestPart(value="dto") MenuRegisterRequestDto menuRegisterRequestDto, @RequestPart(value="menus", required = false) MultipartFile[] menus) throws IOException {
+    public int registerMenu(@RequestPart(value="dto") MenuRegisterRequestDto menuRegisterRequestDto, @RequestPart(value="menus", required = false) MultipartFile[] menus) throws IOException {
         menuService.registerMenu(menuRegisterRequestDto, menus);
+        return 1;
     }
 
     @GetMapping(path = "get/distance")

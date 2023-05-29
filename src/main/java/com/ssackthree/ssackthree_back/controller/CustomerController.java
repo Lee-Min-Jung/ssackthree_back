@@ -19,13 +19,15 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping(path = "/profile/upload/{userId}")
-    public void uploadProfile(@RequestParam("profile") MultipartFile file, @PathVariable(name="userId") long userId) throws IOException {
+    public int uploadProfile(@RequestParam("profile") MultipartFile file, @PathVariable(name="userId") long userId) throws IOException {
         customerService.uploadProfile(file, userId);
+        return 1;
     }
 
     @PostMapping(path = "/profile/update/{userId}")
-    public void updateProfile(@RequestParam("profile") MultipartFile file, @PathVariable(name="userId") long userId) throws IOException {
+    public int updateProfile(@RequestParam("profile") MultipartFile file, @PathVariable(name="userId") long userId) throws IOException {
         customerService.updateProfile(file, userId);
+        return 1;
     }
 
     @GetMapping(path = "/profile/show/{userId}")
@@ -35,8 +37,9 @@ public class CustomerController {
 
 
     @PostMapping(path = "/register/location")
-    public void registerLocation(@RequestBody SetLocationRequestDto setLocationRequestDto) throws Exception {
+    public int registerLocation(@RequestBody SetLocationRequestDto setLocationRequestDto) throws Exception {
         customerService.registerLocation(setLocationRequestDto);
+        return 1;
     }
 
     @GetMapping(path = "/orderBargain/history")

@@ -29,7 +29,8 @@ public class PaymentController {
     }
 
     @GetMapping("/kakaopay/cancel")
-    public void cancelPayRequest(@RequestParam("orderId") String orderId){
+    public int cancelPayRequest(@RequestParam("orderId") String orderId){
         kakaoPayService.payCancel(orderId);
+        return 1;
     }
 }

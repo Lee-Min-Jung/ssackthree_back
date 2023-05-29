@@ -20,8 +20,9 @@ public class BargainOrderController {
     private final BargainOrderService bargainOrderService;
 
     @PostMapping("/order")
-    public void bargainOrder(@RequestBody BargainOrderRequestDto bargainOrderRequestDto){
+    public int bargainOrder(@RequestBody BargainOrderRequestDto bargainOrderRequestDto){
         bargainOrderService.bargainOrder(bargainOrderRequestDto);
+        return 1;
     }
 
     @GetMapping("/list/{menuId}")
@@ -35,12 +36,14 @@ public class BargainOrderController {
     }
 
     @PostMapping("/accept")
-    public void acceptBargain(@RequestBody BargainAcceptDenyRequestDto bargainAcceptRequestDto){
+    public int acceptBargain(@RequestBody BargainAcceptDenyRequestDto bargainAcceptRequestDto){
         bargainOrderService.acceptBargain(bargainAcceptRequestDto);
+        return 1;
     }
 
     @PostMapping("/deny")
-    public void denyBargain(@RequestBody BargainAcceptDenyRequestDto bargainDenyRequestDto){
+    public int denyBargain(@RequestBody BargainAcceptDenyRequestDto bargainDenyRequestDto){
         bargainOrderService.denyBargain(bargainDenyRequestDto);
+        return 1;
     }
 }

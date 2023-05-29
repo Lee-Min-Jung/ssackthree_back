@@ -16,12 +16,14 @@ public class UserLikeController {
     private final UserLikeService userLikeService;
 
     @PostMapping(path = "/menu")
-    public void likeMenu(@RequestBody UserLikeRequestDto userLikeRequestDto) throws Exception{
+    public int likeMenu(@RequestBody UserLikeRequestDto userLikeRequestDto) throws Exception{
         userLikeService.likeMenu(userLikeRequestDto);
+        return 1;
     }
 
     @DeleteMapping(path = "/menu")
-    public void unlikeMenu(@RequestBody UserLikeRequestDto userLikeRequestDto) throws Exception{
+    public int unlikeMenu(@RequestBody UserLikeRequestDto userLikeRequestDto) throws Exception{
         userLikeService.unlikeMenu(userLikeRequestDto);
+        return 1;
     }
 }
