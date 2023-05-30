@@ -1,5 +1,6 @@
 package com.ssackthree.ssackthree_back.controller;
 
+import com.ssackthree.ssackthree_back.dto.CustomerLocationHistoryResponseDto;
 import com.ssackthree.ssackthree_back.dto.OrderBargainHistoryRequestDto;
 import com.ssackthree.ssackthree_back.dto.OrderBargainHistoryResponseDto;
 import com.ssackthree.ssackthree_back.dto.SetLocationRequestDto;
@@ -40,6 +41,11 @@ public class CustomerController {
     public int registerLocation(@RequestBody SetLocationRequestDto setLocationRequestDto) throws Exception {
         customerService.registerLocation(setLocationRequestDto);
         return 1;
+    }
+
+    @GetMapping(path = "/show/location/{userId}")
+    public List<CustomerLocationHistoryResponseDto> getLocationList(@PathVariable(name = "userId") long userId){
+        return customerService.getLocationList(userId);
     }
 
     @GetMapping(path = "/orderBargain/history")

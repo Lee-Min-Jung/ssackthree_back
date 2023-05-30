@@ -1,6 +1,7 @@
 package com.ssackthree.ssackthree_back.service;
 
 import com.google.maps.model.LatLng;
+import com.ssackthree.ssackthree_back.dto.CustomerLocationHistoryResponseDto;
 import com.ssackthree.ssackthree_back.dto.OrderBargainHistoryRequestDto;
 import com.ssackthree.ssackthree_back.dto.OrderBargainHistoryResponseDto;
 import com.ssackthree.ssackthree_back.dto.SetLocationRequestDto;
@@ -109,10 +110,26 @@ public class CustomerService {
                     .m(setLocationRequestDto.getM())
                     .userEntity(userRepository.findById(setLocationRequestDto.getUserId()).get())
                     .createdDate(LocalDateTime.now())
+                    .address(setLocationRequestDto.getAddress())
                     .build();
             userLocationRepository.save(userLocationEntity);
         }
     }
+
+    public List<CustomerLocationHistoryResponseDto> getLocationList(long userId){
+        List<CustomerLocationHistoryResponseDto> locationList = new ArrayList<>();
+        for(UserLocationEntity userLocation : userLocationRepository.findTop5ByUserEntityIdOrderByCreatedDateDesc(userId).get()){
+            CustomerLocationHistoryResponseDto customerLocationHistoryResponseDto = CustomerLocationHistoryResponseDto.builder()
+                    .address(userLocation.getAddress())
+                    .m(userLocation.getM())
+                    .build();
+            locationList.add(customerLocationHistoryResponseDto);
+        }
+        return locationList;
+
+    }
+
+
 
     public List<OrderBargainHistoryResponseDto> getOrderBargainHistory(OrderBargainHistoryRequestDto orderBargainHistoryRequestDto){
         long userId = orderBargainHistoryRequestDto.getUserId();

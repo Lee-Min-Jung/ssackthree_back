@@ -225,11 +225,14 @@ public class MenuService {
 
         // 흥정 조건과 메뉴 타입 조건에 맞는 id 리스트
         List<Long> menuIdListForBarginAndType = menuRepository.findIdsByIsBargainningAndTypeIn(homePageRequestDto.getIsBargainning(), homePageRequestDto.getTypeList());
-
+        log.info("****");
+        log.info(String.valueOf(menuIdListForBarginAndType.size()));
         // 해당 유저가 설정한 위치 정보
         Optional<UserLocationEntity> userLocation = userLocationRepository.findTopByUserEntityIdOrderByCreatedDateDesc(homePageRequestDto.getUserId());
         // 위의 조건 만족하면서 거리 안에 있는 id와 거리 리스트
         List<MenuIdDistance> idDistanceList = getMenuIdDistance(userLocation.get(), menuIdListForBarginAndType);
+        log.info("?????");
+        log.info(String.valueOf(idDistanceList.size()));
         List<Long> menuIdList = new ArrayList<>();
         List<Double> menuDistanceList = new ArrayList<>();
 

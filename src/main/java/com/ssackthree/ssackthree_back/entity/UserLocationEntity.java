@@ -24,6 +24,7 @@ public class UserLocationEntity {
     @Column(name = "user_locaion_id")
     private long id;
 
+    private String address;
     private double latitude;
     private double longitude;
     private int m;
