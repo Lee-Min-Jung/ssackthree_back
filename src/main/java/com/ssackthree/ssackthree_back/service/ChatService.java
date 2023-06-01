@@ -1,10 +1,7 @@
 package com.ssackthree.ssackthree_back.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssackthree.ssackthree_back.dto.ChatListResponseDto;
-import com.ssackthree.ssackthree_back.dto.ChatMessageRequestDto;
-import com.ssackthree.ssackthree_back.dto.ChatRoomRequestDto;
-import com.ssackthree.ssackthree_back.dto.ChatRoomResponseDto;
+import com.ssackthree.ssackthree_back.dto.*;
 import com.ssackthree.ssackthree_back.entity.ChatMessageEntity;
 import com.ssackthree.ssackthree_back.entity.ChatRoomEntity;
 import com.ssackthree.ssackthree_back.entity.CustomerProfileFileEntity;
@@ -110,6 +107,24 @@ public class ChatService {
         }
 
         return chatListResponseDtoList;
+
+    }
+
+    // 특정 방의 채팅 내역
+    public List<ChatMessageListResponseDto> showChatMessageList(long roomId){
+        List<ChatMessageListResponseDto> chatMessageListResponseDtoList = new ArrayList<>();
+
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(roomId).get();
+        for(ChatMessageEntity chatMessage : chatRoomEntity.getChatMessageEntityList()){
+            ChatMessageListResponseDto chatMessageListResponseDto = ChatMessageListResponseDto.builder()
+                    .createdDate(chatMessage.getCreatedDate().toString())
+                    .writerId(chatMessage.getSender().getId())
+                    .content(chatMessage.getContent())
+                    .build();
+            chatMessageListResponseDtoList.add(chatMessageListResponseDto);
+        }
+
+        return chatMessageListResponseDtoList;
 
     }
 
