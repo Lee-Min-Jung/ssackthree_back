@@ -45,17 +45,26 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         // 메시지 보낼 상대 세션 찾기
         WebSocketSession recipientSession = sessions.get(String.valueOf(chatMessageRequestDto.getReceiverId()));
-        log.info(recipientSession.getId());
 
-        // 상대에게 메시지 보내기
-        try {
-            recipientSession.sendMessage(new TextMessage(chatMessageRequestDto.getContent()));
-        } catch (IOException e) {
-            log.error("Failed to send message to recipient: {}", chatMessageRequestDto.getReceiverId(), e);
+        // 상대 세션 존재
+        if(recipientSession != null && recipientSession.isOpen()){
+            // 상대에게 메시지 보내기
+            try {
+                recipientSession.sendMessage(new TextMessage(chatMessageRequestDto.getContent()));
+            } catch (IOException e) {
+                log.error("Failed to send message to recipient: {}", chatMessageRequestDto.getReceiverId(), e);
+            }
+            // 받은 메시지 db 저장
+            chatService.createChatMessage(chatMessageRequestDto);
+        }else{
+            // 받은 메시지 db 저장
+            chatService.createChatMessage(chatMessageRequestDto);
         }
 
-        // 받은 메시지 db 저장
-        chatService.createChatMessage(chatMessageRequestDto);
+
+
+
+
     }
 
     @Override
