@@ -24,10 +24,11 @@ public class ChatController {
         return chatService.createChatRoom(chatRoomDto);
     }
 
-    @GetMapping(path = "/list/{userId}")
+    @GetMapping(path = "/room/list/{userId}")
     public List<ChatListResponseDto> showChatRoomList(@PathVariable(name="userId") long userId){
         return chatService.showChatRoomList(userId);
     }
+
 
 //    @PostMapping(path = "/message")
 //    public int createChatMessage(@RequestBody ChatMessageRequestDto chatMessageRequestDto){
