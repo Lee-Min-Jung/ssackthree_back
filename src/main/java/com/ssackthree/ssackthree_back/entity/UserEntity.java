@@ -61,4 +61,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "receiver")
     private List<ChatMessageEntity> receiveMessageEntityList;
 
+    @OneToMany(mappedBy = "userEntity")
+    private List<MyTownProductEntity> myTownProductEntityList;
+
 }
