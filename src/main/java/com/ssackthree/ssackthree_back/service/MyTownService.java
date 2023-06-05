@@ -127,13 +127,23 @@ public class MyTownService {
         // 해당 유저가 설정한 위치 정보
         Optional<UserLocationEntity> userLocation = userLocationRepository.findTopByUserEntityIdOrderByCreatedDateDesc(townHomeRequestDto.getUserId());
 
-        // 거리 안에 있는 id
-        List<Long> idList = getProductIdList(userLocation.get());
+        // 거리 안에 있는 id와 거리
+        List<MenuIdDistance> idDistanceList = getProductIdList(userLocation.get());
+
+        // id와 거리 분리
+        List<Long> productIdList = new ArrayList<>();
+        List<Double> productDistanceList = new ArrayList<>();
+        for(MenuIdDistance menuIdDistance : idDistanceList){
+            productIdList.add(menuIdDistance.getId());
+            productDistanceList.add(menuIdDistance.getDistance());
+        }
+
 
         // 조건에 맞는 상품들
-        List<MyTownProductEntity> myTownProductEntity = myTownProductRepository.findAllById(idList);
+        List<MyTownProductEntity> myTownProductEntity = myTownProductRepository.findAllById(productIdList);
 
         // 반환할 dto 생성
+        int i = 0;
         List<TownProductResponseDto> productResponseDtoList = new ArrayList<>();
         for(MyTownProductEntity product : myTownProductEntity){
             TownProductResponseDto townProductResponseDto = TownProductResponseDto.builder()
@@ -141,9 +151,11 @@ public class MyTownService {
                     .hopingPlaceAddress(product.getHopingPlaceAddress())
                     .createdDate(product.getCreatedDate().toString())
                     .price(product.getPrice())
+                    .distance(productDistanceList.get(i))
                     .imagePath(product.getMyTownProductFileEntityList().size() == 0 ? "" : product.getMyTownProductFileEntityList().get(0).getFilePath())
                     .build();
             productResponseDtoList.add(townProductResponseDto);
+            i++;
         }
 
         // 정렬
@@ -155,27 +167,31 @@ public class MyTownService {
     }
 
     // 특정 위치 안에 있는 상품 아이디 찾기
-    public List<Long> getProductIdList(UserLocationEntity userLocation){
+    public List<MenuIdDistance> getProductIdList(UserLocationEntity userLocation){
         List<MyTownProductHopingPlaceEntity> myTownProductHopingPlaceEntityList = myTownProductHopingPlaceRepository.findAll();
-        List<Long> idList = new ArrayList<>();
+        List<MenuIdDistance> idDistanceList = new ArrayList<>();
 
         for(MyTownProductHopingPlaceEntity product : myTownProductHopingPlaceEntityList){
             double distance = locationService.getDistance(userLocation.getLatitude(), userLocation.getLongitude(), product.getLatitude(), product.getLongitude());
             if(distance <= userLocation.getM()){
-                idList.add(product.getMyTownProductEntity().getId());
+                idDistanceList.add(new MenuIdDistance(product.getMyTownProductEntity().getId(), distance));
             }
         }
 
-        return idList;
+        return idDistanceList;
     }
 
     // 정렬
     public List<TownProductResponseDto> sort(TownHomeRequestDto townHomeRequestDto, List<TownProductResponseDto> productResponseDtoList){
         Comparator<TownProductResponseDto> createdAtComparator = Comparator.comparing(TownProductResponseDto::getCreatedDate).reversed();
+        Comparator<TownProductResponseDto> distanceComparator = Comparator.comparing(TownProductResponseDto::getDistance);
 
         switch (townHomeRequestDto.getSortType()){
             case "latest":
                 Collections.sort(productResponseDtoList, createdAtComparator);
+                return productResponseDtoList;
+            case "shortest":
+                Collections.sort(productResponseDtoList, distanceComparator);
                 return productResponseDtoList;
             default:
                 return productResponseDtoList;

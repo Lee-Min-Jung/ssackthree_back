@@ -15,4 +15,5 @@ public class TownProductResponseDto {
     private String hopingPlaceAddress;
     private String createdDate;
     private String imagePath;
+    private double distance;
 }
