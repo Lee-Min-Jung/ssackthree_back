@@ -1,6 +1,8 @@
 package com.ssackthree.ssackthree_back.controller;
 
 import com.ssackthree.ssackthree_back.dto.MenuRegisterRequestDto;
+import com.ssackthree.ssackthree_back.dto.TownHomeRequestDto;
+import com.ssackthree.ssackthree_back.dto.TownProductResponseDto;
 import com.ssackthree.ssackthree_back.dto.TownRegisterProductRequestDto;
 import com.ssackthree.ssackthree_back.service.MyTownService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -22,5 +25,10 @@ public class MyTownController {
     public int registerProduct(@RequestPart(value="dto") TownRegisterProductRequestDto townRegisterProductRequestDto, @RequestPart(value="products", required = false) MultipartFile[] products) throws Exception {
         log.info("registerProduct 컨트롤러");
         return myTownService.registerProduct(townRegisterProductRequestDto, products);
+    }
+
+    @GetMapping("list")
+    public List<TownProductResponseDto> getTownProductList(@RequestBody TownHomeRequestDto townHomeRequestDto){
+        return myTownService.getTownProductList(townHomeRequestDto);
     }
 }

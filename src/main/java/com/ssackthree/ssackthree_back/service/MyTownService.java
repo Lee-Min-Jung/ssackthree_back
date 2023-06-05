@@ -1,10 +1,11 @@
 package com.ssackthree.ssackthree_back.service;
 
 import com.google.maps.model.LatLng;
-import com.ssackthree.ssackthree_back.dto.TownRegisterProductRequestDto;
+import com.ssackthree.ssackthree_back.dto.*;
 import com.ssackthree.ssackthree_back.entity.*;
 import com.ssackthree.ssackthree_back.enums.TownProductStatusEnum;
 import com.ssackthree.ssackthree_back.repository.*;
+import com.ssackthree.ssackthree_back.service.customizedClass.MenuIdDistance;
 import com.ssackthree.ssackthree_back.util.FileService;
 import com.ssackthree.ssackthree_back.util.LocationService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.*;
 
 @Service
 @Transactional
@@ -30,6 +31,7 @@ public class MyTownService {
     private final MyTownProductStatusRepository myTownProductStatusRepository;
     private final MyTownProductHopingPlaceRepository myTownProductHopingPlaceRepository;
     private final MyTownProductRepository myTownProductRepository;
+    private final UserLocationRepository userLocationRepository;
 
     // 상품 저장
     public int registerProduct(TownRegisterProductRequestDto townRegisterProductRequestDto, MultipartFile[] products) throws Exception {
@@ -118,6 +120,67 @@ public class MyTownService {
                 .build();
 
         myTownProductHopingPlaceRepository.save(myTownProductHopingPlaceEntity);
+    }
+
+    // 상품 리스트
+    public List<TownProductResponseDto> getTownProductList(TownHomeRequestDto townHomeRequestDto){
+        // 해당 유저가 설정한 위치 정보
+        Optional<UserLocationEntity> userLocation = userLocationRepository.findTopByUserEntityIdOrderByCreatedDateDesc(townHomeRequestDto.getUserId());
+
+        // 거리 안에 있는 id
+        List<Long> idList = getProductIdList(userLocation.get());
+
+        // 조건에 맞는 상품들
+        List<MyTownProductEntity> myTownProductEntity = myTownProductRepository.findAllById(idList);
+
+        // 반환할 dto 생성
+        List<TownProductResponseDto> productResponseDtoList = new ArrayList<>();
+        for(MyTownProductEntity product : myTownProductEntity){
+            TownProductResponseDto townProductResponseDto = TownProductResponseDto.builder()
+                    .title(product.getTitle())
+                    .hopingPlaceAddress(product.getHopingPlaceAddress())
+                    .createdDate(product.getCreatedDate().toString())
+                    .price(product.getPrice())
+                    .imagePath(product.getMyTownProductFileEntityList().size() == 0 ? "" : product.getMyTownProductFileEntityList().get(0).getFilePath())
+                    .build();
+            productResponseDtoList.add(townProductResponseDto);
+        }
+
+        // 정렬
+        productResponseDtoList = sort(townHomeRequestDto, productResponseDtoList);
+
+        return productResponseDtoList;
+
+
+    }
+
+    // 특정 위치 안에 있는 상품 아이디 찾기
+    public List<Long> getProductIdList(UserLocationEntity userLocation){
+        List<MyTownProductHopingPlaceEntity> myTownProductHopingPlaceEntityList = myTownProductHopingPlaceRepository.findAll();
+        List<Long> idList = new ArrayList<>();
+
+        for(MyTownProductHopingPlaceEntity product : myTownProductHopingPlaceEntityList){
+            double distance = locationService.getDistance(userLocation.getLatitude(), userLocation.getLongitude(), product.getLatitude(), product.getLongitude());
+            if(distance <= userLocation.getM()){
+                idList.add(product.getMyTownProductEntity().getId());
+            }
+        }
+
+        return idList;
+    }
+
+    // 정렬
+    public List<TownProductResponseDto> sort(TownHomeRequestDto townHomeRequestDto, List<TownProductResponseDto> productResponseDtoList){
+        Comparator<TownProductResponseDto> createdAtComparator = Comparator.comparing(TownProductResponseDto::getCreatedDate).reversed();
+
+        switch (townHomeRequestDto.getSortType()){
+            case "latest":
+                Collections.sort(productResponseDtoList, createdAtComparator);
+                return productResponseDtoList;
+            default:
+                return productResponseDtoList;
+        }
+
     }
 
 }

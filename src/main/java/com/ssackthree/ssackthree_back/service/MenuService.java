@@ -342,7 +342,7 @@ public class MenuService {
 
 
     public List<MenuInDistanceResponseDto> sort(HomePageRequestDto homePageRequestDto, List<MenuInDistanceResponseDto> menuInDistanceResponseDto){
-        Comparator<MenuInDistanceResponseDto> createdAtComparator = Comparator.comparing(MenuInDistanceResponseDto::getCreatedDate);
+        Comparator<MenuInDistanceResponseDto> createdAtComparator = Comparator.comparing(MenuInDistanceResponseDto::getCreatedDate).reversed();
         Comparator<MenuInDistanceResponseDto> distanceComparator = Comparator.comparing(MenuInDistanceResponseDto::getDistance);
         Comparator<MenuInDistanceResponseDto> likeComparator = Comparator.comparing(MenuInDistanceResponseDto::getLikeCount).reversed();
 
