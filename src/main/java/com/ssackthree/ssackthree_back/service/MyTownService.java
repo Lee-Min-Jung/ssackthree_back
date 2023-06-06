@@ -128,7 +128,7 @@ public class MyTownService {
         Optional<UserLocationEntity> userLocation = userLocationRepository.findTopByUserEntityIdOrderByCreatedDateDesc(townHomeRequestDto.getUserId());
 
         // 거리 안에 있는 id와 거리
-        List<MenuIdDistance> idDistanceList = getProductIdList(userLocation.get());
+        List<MenuIdDistance> idDistanceList = getProductIdList(userLocation.get(), townHomeRequestDto.getUserId());
 
         // id와 거리 분리
         List<Long> productIdList = new ArrayList<>();
@@ -154,6 +154,7 @@ public class MyTownService {
                     .distance(productDistanceList.get(i))
                     .imagePath(product.getMyTownProductFileEntityList().size() == 0 ? "" : product.getMyTownProductFileEntityList().get(0).getFilePath())
                     .build();
+
             productResponseDtoList.add(townProductResponseDto);
             i++;
         }
@@ -167,13 +168,13 @@ public class MyTownService {
     }
 
     // 특정 위치 안에 있는 상품 아이디 찾기
-    public List<MenuIdDistance> getProductIdList(UserLocationEntity userLocation){
+    public List<MenuIdDistance> getProductIdList(UserLocationEntity userLocation, long userId){
         List<MyTownProductHopingPlaceEntity> myTownProductHopingPlaceEntityList = myTownProductHopingPlaceRepository.findAll();
         List<MenuIdDistance> idDistanceList = new ArrayList<>();
 
         for(MyTownProductHopingPlaceEntity product : myTownProductHopingPlaceEntityList){
             double distance = locationService.getDistance(userLocation.getLatitude(), userLocation.getLongitude(), product.getLatitude(), product.getLongitude());
-            if(distance <= userLocation.getM()){
+            if(distance <= userLocation.getM() && product.getMyTownProductEntity().getUserEntity().getId() != userId){
                 idDistanceList.add(new MenuIdDistance(product.getMyTownProductEntity().getId(), distance));
             }
         }
@@ -220,6 +221,7 @@ public class MyTownService {
         return townProductDetailResponseDto;
     }
 
+    // 판매자의 다른 상품
     public List<TownOtherProductResponseDto> getTownOtherProductList(MyTownProductEntity myTownProductEntity){
         List<TownOtherProductResponseDto> townOtherProductResponseDtoList = new ArrayList<>();
 

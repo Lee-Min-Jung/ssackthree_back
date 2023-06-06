@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TownHomeRequestDto {
     private String sortType;
-    private String isMy;
+    private String isMine;
     private long userId;
 }
