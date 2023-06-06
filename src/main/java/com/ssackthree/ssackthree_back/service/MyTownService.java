@@ -124,6 +124,25 @@ public class MyTownService {
 
     // 상품 리스트
     public List<TownProductResponseDto> getTownProductList(TownHomeRequestDto townHomeRequestDto){
+
+        // 본인 상품 보기 선택한 경우
+        if(townHomeRequestDto.getIsMine().equals("T")){
+            List<MyTownProductEntity> myTownProductEntityList = myTownProductRepository.findByUserEntityId(townHomeRequestDto.getUserId()).get();
+            List<TownProductResponseDto> townProductResponseDtoList = new ArrayList<>();
+
+            for(MyTownProductEntity product : myTownProductEntityList){
+                TownProductResponseDto townProductResponseDto = TownProductResponseDto.builder()
+                        .title(product.getTitle())
+                        .hopingPlaceAddress(product.getHopingPlaceAddress())
+                        .createdDate(product.getCreatedDate().toString())
+                        .price(product.getPrice())
+                        .imagePath(product.getMyTownProductFileEntityList().size() == 0 ? "" : product.getMyTownProductFileEntityList().get(0).getFilePath())
+                        .build();
+                townProductResponseDtoList.add(townProductResponseDto);
+            }
+            return townProductResponseDtoList;
+        }
+
         // 해당 유저가 설정한 위치 정보
         Optional<UserLocationEntity> userLocation = userLocationRepository.findTopByUserEntityIdOrderByCreatedDateDesc(townHomeRequestDto.getUserId());
 
