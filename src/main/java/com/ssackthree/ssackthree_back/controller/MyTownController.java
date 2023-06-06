@@ -1,9 +1,6 @@
 package com.ssackthree.ssackthree_back.controller;
 
-import com.ssackthree.ssackthree_back.dto.MenuRegisterRequestDto;
-import com.ssackthree.ssackthree_back.dto.TownHomeRequestDto;
-import com.ssackthree.ssackthree_back.dto.TownProductResponseDto;
-import com.ssackthree.ssackthree_back.dto.TownRegisterProductRequestDto;
+import com.ssackthree.ssackthree_back.dto.*;
 import com.ssackthree.ssackthree_back.service.MyTownService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,5 +27,10 @@ public class MyTownController {
     @GetMapping("list")
     public List<TownProductResponseDto> getTownProductList(@RequestBody TownHomeRequestDto townHomeRequestDto){
         return myTownService.getTownProductList(townHomeRequestDto);
+    }
+
+    @GetMapping("list/detail/{productId}")
+    public TownProductDetailResponseDto getTownProductDetail(@PathVariable(name = "productId") long productId){
+        return myTownService.getTownProductDetail(productId);
     }
 }

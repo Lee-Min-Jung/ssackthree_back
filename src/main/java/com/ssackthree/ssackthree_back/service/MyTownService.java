@@ -199,4 +199,44 @@ public class MyTownService {
 
     }
 
+    // 상품 디테일
+    public TownProductDetailResponseDto getTownProductDetail(long productId){
+        MyTownProductEntity myTownProductEntity = myTownProductRepository.findById(productId).get();
+
+        // 해당 상품의 판매자가 올린 다른 상품 리스트 구하기
+        List<TownOtherProductResponseDto> townOtherProductResponseDtoList = getTownOtherProductList(myTownProductEntity);
+
+        TownProductDetailResponseDto townProductDetailResponseDto = TownProductDetailResponseDto.builder()
+                .title(myTownProductEntity.getTitle())
+                .content(myTownProductEntity.getContent())
+                .createdDate(myTownProductEntity.getCreatedDate().toString())
+                .hopingPlaceAddress(myTownProductEntity.getHopingPlaceAddress())
+                .price(myTownProductEntity.getPrice())
+                .status(myTownProductEntity.getMyTownProductStatusEntity().getProductStatus().toString())
+                .imagePath(myTownProductEntity.getMyTownProductFileEntityList().size() == 0 ? "" : myTownProductEntity.getMyTownProductFileEntityList().get(0).getFilePath())
+                .townOtherProductResponseDtoList(townOtherProductResponseDtoList)
+                .build();
+
+        return townProductDetailResponseDto;
+    }
+
+    public List<TownOtherProductResponseDto> getTownOtherProductList(MyTownProductEntity myTownProductEntity){
+        List<TownOtherProductResponseDto> townOtherProductResponseDtoList = new ArrayList<>();
+
+        for(MyTownProductEntity product : myTownProductEntity.getUserEntity().getMyTownProductEntityList()){
+            if(!product.equals(myTownProductEntity) && product.getMyTownProductStatusEntity().getProductStatus() == TownProductStatusEnum.SALE_ING){
+                TownOtherProductResponseDto townOtherProductResponseDto = TownOtherProductResponseDto.builder()
+                        .title(product.getTitle())
+                        .price(product.getPrice())
+                        .build();
+                townOtherProductResponseDtoList.add(townOtherProductResponseDto);
+
+
+            }
+        }
+
+        return townOtherProductResponseDtoList;
+
+    }
+
 }
