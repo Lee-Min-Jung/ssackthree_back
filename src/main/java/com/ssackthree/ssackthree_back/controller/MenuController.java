@@ -29,9 +29,10 @@ public class MenuController {
         return menuService.getMenuListInDistance(homePageRequestDto);
     }
 
-    @GetMapping(path = "get/detail/{menuId}")
-    public MenuDetailResponseDto getMenuDetail(@PathVariable(name="menuId") long menuId){
-        return menuService.getMenuDetail(menuId);
+    // TODO: 2023-06-07 userID를 이렇게 안 보내고 싶은데... home안에 넣어서 보내자니 달랑 그거 하나만 보내는 것 같아서 일단 path로 보냄 나중에 토큰으로 받으면 그걸로 처리하면 좋을 듯
+    @GetMapping(path = "get/detail/{menuId}/{userId}")
+    public MenuDetailResponseDto getMenuDetail(@PathVariable(name="menuId") long menuId, @PathVariable(name = "userId") long userId){
+        return menuService.getMenuDetail(menuId, userId);
     }
 
     @GetMapping(path = "get/store")

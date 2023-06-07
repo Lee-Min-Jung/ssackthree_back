@@ -286,7 +286,7 @@ public class MenuService {
         return "F";
     }
 
-    public MenuDetailDto setMenuDetailDto(MenuEntity menu){
+    public MenuDetailDto setMenuDetailDto(MenuEntity menu, long userId){
         return MenuDetailDto.builder()
                 .name(menu.getName())
                 .originalPrice(menu.getOriginalPrice())
@@ -295,6 +295,7 @@ public class MenuService {
                 .bargainLimitTime(Optional.ofNullable(menu.getMenuBargainningEntity()).map(MenuBargainningEntity::getLimitTime).orElse(0))
                 .saleEndTime(menu.getEndTime())
                 .imagePath(Optional.ofNullable(menu.getMenuFileEntity().get(0)).map(MenuFileEntity::getFilePath).orElse(""))
+                .isMenuLike(isMenuLike(menu, userId))
                 .build();
     }
 
@@ -322,12 +323,12 @@ public class MenuService {
                 .build();
     }
 
-    public MenuDetailResponseDto getMenuDetail(long menuId){
+    public MenuDetailResponseDto getMenuDetail(long menuId, long userId){
         Optional<MenuEntity> menu = menuRepository.findById(menuId);
 
         if(menu.isPresent()){
             // 메뉴 디테일 정보
-            MenuDetailDto menuDetailDto = setMenuDetailDto(menu.get());
+            MenuDetailDto menuDetailDto = setMenuDetailDto(menu.get(), userId);
 
             // 다른 메뉴 정보
             List<MenuOtherDto> menuOtherDtoList = new ArrayList<>();
