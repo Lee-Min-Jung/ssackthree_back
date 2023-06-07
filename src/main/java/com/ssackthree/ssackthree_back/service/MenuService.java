@@ -34,6 +34,7 @@ public class MenuService {
     private final UserLikeRepository userLikeRepository;
     private final FileService fileService;
     private final UserLocationRepository userLocationRepository;
+    private final UserRepository userRepository;
 
     public static final double EARTH_RADIUS = 6371.0088; // 지구 반지름 상수 선언
 
@@ -257,6 +258,7 @@ public class MenuService {
                     .distance(menuDistanceList.get(i))
                     .menuImagePath(menuEntity.getMenuFileEntity().get(0).getFilePath())
                     .likeCount(menuEntity.getUserLikeEntityList().size())
+                    .isLike(isMenuLike(menuEntity, homePageRequestDto.getUserId()))
                     .createdDate(menuEntity.getCreatedDate())
                     .build();
             menuInDistanceResponseDtoList.add(menuInDistanceResponseDto);
@@ -273,6 +275,17 @@ public class MenuService {
 
 
     }
+
+    // 사용자가 메뉴에 좋아요 눌렀는지 확인
+    public String isMenuLike(MenuEntity menuEntity, long userId){
+        for(UserLikeEntity user : menuEntity.getUserLikeEntityList()){
+            if(user.getUserEntity().getId() == userId){
+                return "T";
+            }
+        }
+        return "F";
+    }
+
     public MenuDetailDto setMenuDetailDto(MenuEntity menu){
         return MenuDetailDto.builder()
                 .name(menu.getName())
