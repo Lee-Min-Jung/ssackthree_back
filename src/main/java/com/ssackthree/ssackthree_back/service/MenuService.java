@@ -9,7 +9,6 @@ import com.ssackthree.ssackthree_back.service.customizedClass.MenuIdDistance;
 import com.ssackthree.ssackthree_back.util.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +30,7 @@ public class MenuService {
     private final MenuFileRepository menuFileRepository;
     private final MenuStatusRepository menuStatusRepository;
     private final MenuBargainningRepository menuBargainningRepository;
-    private final UserLikeRepository userLikeRepository;
+    private final UserMenuLikeRepository userLikeRepository;
     private final FileService fileService;
     private final UserLocationRepository userLocationRepository;
     private final UserRepository userRepository;
@@ -257,7 +256,7 @@ public class MenuService {
                     .storeName(menuEntity.getStoreEntity().getStoreName())
                     .distance(menuDistanceList.get(i))
                     .menuImagePath(menuEntity.getMenuFileEntity().get(0).getFilePath())
-                    .likeCount(menuEntity.getUserLikeEntityList().size())
+                    .likeCount(menuEntity.getUserMenuLikeEntityList().size())
                     .isLike(isMenuLike(menuEntity, homePageRequestDto.getUserId()))
                     .createdDate(menuEntity.getCreatedDate())
                     .build();
@@ -278,7 +277,7 @@ public class MenuService {
 
     // 사용자가 메뉴에 좋아요 눌렀는지 확인
     public String isMenuLike(MenuEntity menuEntity, long userId){
-        for(UserLikeEntity user : menuEntity.getUserLikeEntityList()){
+        for(UserMenuLikeEntity user : menuEntity.getUserMenuLikeEntityList()){
             if(user.getUserEntity().getId() == userId){
                 return "T";
             }

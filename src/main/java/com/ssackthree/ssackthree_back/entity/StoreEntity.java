@@ -57,5 +57,8 @@ public class StoreEntity {
     private StoreLocationEntity storeLocationEntity;
 
     @OneToMany(mappedBy = "storeEntity")
+    private List<UserStoreLikeEntity> userStoreLikeEntityList;
+
+    @OneToMany(mappedBy = "storeEntity")
     private List<MenuEntity> menuEntityList = new ArrayList<>();
 }

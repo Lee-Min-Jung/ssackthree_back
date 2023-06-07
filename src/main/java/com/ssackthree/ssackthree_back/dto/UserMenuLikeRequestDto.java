@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserLikeRequestDto {
+public class UserMenuLikeRequestDto {
     private long userId;
     private long menuId;
 }

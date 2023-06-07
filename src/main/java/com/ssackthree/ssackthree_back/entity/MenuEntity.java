@@ -1,7 +1,6 @@
 package com.ssackthree.ssackthree_back.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ssackthree.ssackthree_back.enums.MenuStatusEnum;
 import com.ssackthree.ssackthree_back.enums.MenuTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +10,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +54,7 @@ public class MenuEntity {
     private MenuBargainningEntity menuBargainningEntity;
 
     @OneToMany(mappedBy = "menuEntity")
-    private List<UserLikeEntity> userLikeEntityList;
+    private List<UserMenuLikeEntity> userMenuLikeEntityList;
 
     @OneToOne(mappedBy = "menuEntity")
     private OrderEntity orderEntity;

@@ -12,16 +12,17 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tb_user_like")
-public class UserLikeEntity {
+@Table(name = "tb_user_store_like")
+public class UserStoreLikeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "store_like_id")
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "menu_id")
-    private MenuEntity menuEntity;
+    @JoinColumn(name = "store_id")
+    private StoreEntity storeEntity;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
