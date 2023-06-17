@@ -24,7 +24,7 @@ public class MenuController {
         return 1;
     }
 
-    @GetMapping(path = "get/distance")
+    @PostMapping(path = "get/distance")
     public List<MenuInDistanceResponseDto> getMenuListInDistance(@RequestBody HomePageRequestDto homePageRequestDto){
         return menuService.getMenuListInDistance(homePageRequestDto);
     }
