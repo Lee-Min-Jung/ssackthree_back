@@ -87,6 +87,8 @@ public class ChatService {
                 // 상대가 점주일때
                 if(counterpart.getRole().equals(RoleEnum.ROLE_STORE)){
                     ChatListResponseDto chatListResponseDto = ChatListResponseDto.builder()
+                            .chatRoomId(cr.getId())
+                            .counterpartUserId(counterpart.getId())
                             .counterpartName(counterpart.getStoreEntity().getStoreName())
                             .counterpartProfile(counterpart.getStoreEntity().getStoreProfileFileEntity().getFilePath())
                             .counterpartRole("점주")
@@ -94,6 +96,8 @@ public class ChatService {
                     chatListResponseDtoList.add(chatListResponseDto);
                 }else{// 상대가 일반 손님일때
                     ChatListResponseDto chatListResponseDto = ChatListResponseDto.builder()
+                            .chatRoomId(cr.getId())
+                            .counterpartUserId(counterpart.getId())
                             .counterpartName(counterpart.getRepName())
                             .counterpartProfile(Optional.ofNullable(counterpart.getCustomerProfileFileEntity()).map(CustomerProfileFileEntity::getFilePath).orElse(null))
                             .counterpartRole("사용자")
