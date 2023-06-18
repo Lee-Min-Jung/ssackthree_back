@@ -132,6 +132,7 @@ public class MyTownService {
 
             for(MyTownProductEntity product : myTownProductEntityList){
                 TownProductResponseDto townProductResponseDto = TownProductResponseDto.builder()
+                        .productId(product.getId())
                         .title(product.getTitle())
                         .hopingPlaceAddress(product.getHopingPlaceAddress())
                         .createdDate(product.getCreatedDate().toString())
@@ -166,6 +167,7 @@ public class MyTownService {
         List<TownProductResponseDto> productResponseDtoList = new ArrayList<>();
         for(MyTownProductEntity product : myTownProductEntity){
             TownProductResponseDto townProductResponseDto = TownProductResponseDto.builder()
+                    .productId(product.getId())
                     .title(product.getTitle())
                     .hopingPlaceAddress(product.getHopingPlaceAddress())
                     .createdDate(product.getCreatedDate().toString())
@@ -228,6 +230,7 @@ public class MyTownService {
 
         TownProductDetailResponseDto townProductDetailResponseDto = TownProductDetailResponseDto.builder()
                 .writerId(myTownProductEntity.getUserEntity().getId())
+                .productId(myTownProductEntity.getId())
                 .title(myTownProductEntity.getTitle())
                 .content(myTownProductEntity.getContent())
                 .createdDate(myTownProductEntity.getCreatedDate().toString())

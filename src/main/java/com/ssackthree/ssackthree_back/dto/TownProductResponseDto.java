@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TownProductResponseDto {
+    private long productId;
     private int price;
     private String title;
     private String hopingPlaceAddress;

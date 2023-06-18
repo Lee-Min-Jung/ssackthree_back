@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class TownProductDetailResponseDto {
     private long writerId;
+    private long productId;
     private String title;
     private String status;
     private int price;
