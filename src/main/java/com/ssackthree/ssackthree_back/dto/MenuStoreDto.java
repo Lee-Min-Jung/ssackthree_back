@@ -22,4 +22,5 @@ public class MenuStoreDto {
     private String mainAddress;
     private String detailAddress;
     private String storeImagePath;
+    private String isStoreLike;
 }

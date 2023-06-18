@@ -285,6 +285,16 @@ public class MenuService {
         return "F";
     }
 
+    // 사용자가 식당에 좋아요 눌렀는지 확인
+    public String isStoreLike(StoreEntity storeEntity, long userId){
+        for(UserStoreLikeEntity user : storeEntity.getUserStoreLikeEntityList()){
+            if(user.getUserEntity().getId() == userId){
+                return "T";
+            }
+        }
+        return "F";
+    }
+
     public MenuDetailDto setMenuDetailDto(MenuEntity menu, long userId){
         return MenuDetailDto.builder()
                 .name(menu.getName())
@@ -307,7 +317,7 @@ public class MenuService {
                 .build();
     }
 
-    public MenuStoreDto setMenuStoreDto(StoreEntity store){
+    public MenuStoreDto setMenuStoreDto(StoreEntity store, long userId){
         return MenuStoreDto.builder()
                 .storeName(store.getStoreName())
                 .startTime(store.getStartTime())
@@ -318,6 +328,7 @@ public class MenuService {
                 .latitude(store.getStoreLocationEntity().getLatitude())
                 .mainAddress(store.getMainAddress())
                 .detailAddress(store.getDetailAddress())
+                .isStoreLike(isStoreLike(store, userId))
                 .storeImagePath(Optional.ofNullable(store.getStoreProfileFileEntity()).map(StoreProfileFileEntity::getFilePath).orElse(""))
                 .build();
     }
@@ -338,7 +349,7 @@ public class MenuService {
             }
 
             // 가게 정보
-            MenuStoreDto menuStoreDto = setMenuStoreDto(menu.get().getStoreEntity());
+            MenuStoreDto menuStoreDto = setMenuStoreDto(menu.get().getStoreEntity(), userId);
 
             // 응답 dto 설정
             MenuDetailResponseDto menuDetailResponseDto = MenuDetailResponseDto.builder()
