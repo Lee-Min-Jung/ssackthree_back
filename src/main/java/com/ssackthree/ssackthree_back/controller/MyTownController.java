@@ -24,7 +24,7 @@ public class MyTownController {
         return myTownService.registerProduct(townRegisterProductRequestDto, products);
     }
 
-    @GetMapping("list")
+    @PostMapping("list")
     public List<TownProductResponseDto> getTownProductList(@RequestBody TownHomeRequestDto townHomeRequestDto){
         return myTownService.getTownProductList(townHomeRequestDto);
     }

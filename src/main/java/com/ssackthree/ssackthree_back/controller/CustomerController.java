@@ -48,7 +48,7 @@ public class CustomerController {
         return customerService.getLocationList(userId);
     }
 
-    @GetMapping(path = "/orderBargain/history")
+    @PostMapping(path = "/orderBargain/history")
     public List<OrderBargainHistoryResponseDto> getOrderBargainHistory(@RequestBody OrderBargainHistoryRequestDto orderBargainHistoryRequestDto) throws Exception{
         return customerService.getOrderBargainHistory(orderBargainHistoryRequestDto);
     }
