@@ -47,6 +47,11 @@ public class KakaoPayService {
     private final BargainOrderRepository bargainOrderRepository;
 
     public KakaoPayReadyResponseDto payReady(KakaoPayRequestDto kakaoPayRequestDto){
+        // 해당 메뉴 id로 결제 중인 것이 있는 지 확인
+        if(orderRepository.findByMenuEntityId(kakaoPayRequestDto.getMenuId()).isPresent()){
+            return null;
+        }
+
         // orderEntity 생성
         OrderEntity order = saveOrderEntity(kakaoPayRequestDto);
 
