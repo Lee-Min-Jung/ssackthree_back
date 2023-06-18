@@ -227,6 +227,7 @@ public class MyTownService {
         List<TownOtherProductResponseDto> townOtherProductResponseDtoList = getTownOtherProductList(myTownProductEntity);
 
         TownProductDetailResponseDto townProductDetailResponseDto = TownProductDetailResponseDto.builder()
+                .writerId(myTownProductEntity.getUserEntity().getId())
                 .title(myTownProductEntity.getTitle())
                 .content(myTownProductEntity.getContent())
                 .createdDate(myTownProductEntity.getCreatedDate().toString())

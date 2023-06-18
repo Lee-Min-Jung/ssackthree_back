@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TownProductDetailResponseDto {
+    private long writerId;
     private String title;
     private String status;
     private int price;
