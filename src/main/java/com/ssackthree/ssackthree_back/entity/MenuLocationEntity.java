@@ -17,7 +17,7 @@ public class MenuLocationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "menu_locaion_id")
+    @Column(name = "menu_location_id")
     private long id;
 
     private double latitude;

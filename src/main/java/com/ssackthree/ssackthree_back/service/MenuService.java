@@ -376,7 +376,9 @@ public class MenuService {
     }
 
     public List<MenuIdDistance> getMenuIdDistance(UserLocationEntity userLocation, List<Long> idList){
+        log.info("getMenuIdDistance");
         List<MenuLocationEntity> menuLocationEntityList = menuLocationRepository.findAll();
+        log.info("findAll 끝");
         List<MenuIdDistance> menuIdDistanceList = new ArrayList<>();
         for(MenuLocationEntity menuLocation : menuLocationEntityList){
             if(idList.contains(menuLocation.getMenuEntity().getId())){
@@ -386,7 +388,7 @@ public class MenuService {
                 }
             }
         }
-
+        log.info("getMenuIdDistance 끝");
         return menuIdDistanceList;
     }
 
