@@ -65,7 +65,7 @@ public class KakaoPayService {
         parameters.add("quantity", "1");
         parameters.add("total_amount", String.valueOf(kakaoPayRequestDto.getPrice()));
         parameters.add("tax_free_amount", "0");
-        parameters.add("approval_url", "http://localhost:8080/api/payment/kakaopay/success"+"?orderId="+String.valueOf(order.getId())); // 결제승인시 넘어갈 url
+        parameters.add("approval_url", "http://192.168.130.148:8080/api/payment/kakaopay/success"+"?orderId="+String.valueOf(order.getId())); // 결제승인시 넘어갈 url
         parameters.add("cancel_url", "http://localhost:8080/api/payment/kakaopay/cancel"+"?orderId="+String.valueOf(order.getId())); // 결제취소시 넘어갈 url
         parameters.add("fail_url", "http://localhost:8080/api/payment/kakaopay/fail"); // 결제 실패시 넘어갈 url
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
