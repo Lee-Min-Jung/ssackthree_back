@@ -24,7 +24,7 @@ public class PaymentController {
     }
 
     @GetMapping("/kakaopay/success")
-    public KakaoPayApproveResponseDto afterPayRequest(@RequestParam("pg_token") String pgToken, @RequestParam("orderId") String orderId){
+    public String afterPayRequest(@RequestParam("pg_token") String pgToken, @RequestParam("orderId") String orderId){
         return kakaoPayService.payApprove(pgToken, orderId);
     }
 

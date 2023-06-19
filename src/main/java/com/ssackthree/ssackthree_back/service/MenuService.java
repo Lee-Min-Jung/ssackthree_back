@@ -68,15 +68,15 @@ public class MenuService {
 
         // 흥정일 경우 흥정 세부 내용
         if(menuRegisterRequestDto.getIsBargainning().equals("T")){
-            registerMenuBargainning(menuRegisterRequestDto.getMenuBargainningDto(), menuEntity);
+            registerMenuBargainning(menuRegisterRequestDto.getLimitTime(), menuRegisterRequestDto.getMinPrice(), menuEntity);
         }
     }
 
-    public void registerMenuBargainning(MenuBargainningDto menuBargainningDto, MenuEntity menuEntity){
+    public void registerMenuBargainning(int limitTime, int minPrice, MenuEntity menuEntity){
         MenuBargainningEntity menuBargainningEntity = MenuBargainningEntity.builder()
-                .limitTime(menuBargainningDto.getLimitTime())
-                .minPrice(menuBargainningDto.getMinPrice())
-                .bargainEnd(getAfterTime(menuBargainningDto.getLimitTime()))
+                .limitTime(limitTime)
+                .minPrice(minPrice)
+                .bargainEnd(getAfterTime(limitTime))
                 .menuEntity(menuEntity)
                 .build();
 

@@ -107,7 +107,7 @@ public class KakaoPayService {
         }
     }
 
-    public KakaoPayApproveResponseDto payApprove(String pgToken, String orderId){
+    public String payApprove(String pgToken, String orderId){
 
         // tid를 찾아와야 함
         OrderEntity order = orderRepository.findById(Long.parseLong(orderId)).get();
@@ -140,7 +140,9 @@ public class KakaoPayService {
         // 주문 세부 정보 저장
         approveResponse.setKakaoPayResultResponseDto(getKakaoPayResultResponseDto(Long.parseLong(approveResponse.getPartner_order_id())));
 
-        return approveResponse;
+//        return approveResponse;
+
+        return "https://www.naver.com/";
 
     }
 

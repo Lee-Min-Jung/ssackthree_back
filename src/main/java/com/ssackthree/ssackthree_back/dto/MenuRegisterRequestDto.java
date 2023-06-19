@@ -21,9 +21,10 @@ public class MenuRegisterRequestDto {
     private int originalPrice;
     private int discountedPrice;
     private String isBargainning;
-    private MenuBargainningDto menuBargainningDto;
     private String type;
     private String endTime;
     private List<MultipartFile> menuImages;
+    private int limitTime;
+    private int minPrice;
 
 }
