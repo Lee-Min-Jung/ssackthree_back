@@ -35,7 +35,7 @@ public class MenuController {
         return menuService.getMenuDetail(menuId, userId);
     }
 
-    @GetMapping(path = "get/store")
+    @PostMapping(path = "get/store")
     public List<StoreMenuListResponseDto> getStoreMenuList(@RequestBody StoreMenuListRequestDto storeMenuListRequestDto){
         return menuService.getStoreMenuList(storeMenuListRequestDto);
     }
