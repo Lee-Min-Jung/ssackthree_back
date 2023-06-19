@@ -19,9 +19,9 @@ public class MyTownController {
     private final MyTownService myTownService;
 
     @PostMapping("register")
-    public int registerProduct(@RequestPart(value="dto") TownRegisterProductRequestDto townRegisterProductRequestDto, @RequestPart(value="products", required = false) MultipartFile[] products) throws Exception {
-        log.info("registerProduct 컨트롤러");
-        return myTownService.registerProduct(townRegisterProductRequestDto, products);
+    public int registerProduct(TownRegisterProductRequestDto townRegisterProductRequestDto) throws Exception {
+        log.info("registerProduct 컨트롤러 실행");
+        return myTownService.registerProduct(townRegisterProductRequestDto);
     }
 
     @PostMapping("list")

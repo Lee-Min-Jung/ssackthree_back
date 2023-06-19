@@ -39,7 +39,7 @@ public class MenuService {
 
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public void registerMenu(MenuRegisterRequestDto menuRegisterRequestDto, MultipartFile[] menus) throws IOException {
+    public void registerMenu(MenuRegisterRequestDto menuRegisterRequestDto) throws IOException {
 
         MenuTypeEnum menuTypeEnum = getMenuType(menuRegisterRequestDto.getType());
 
@@ -61,7 +61,7 @@ public class MenuService {
         registerMenuLocation(storeEntity.get().getStoreLocationEntity(), menuEntity);
 
         // 메뉴 이미지
-        registerMenuImageFile(menus, menuEntity);
+        registerMenuImageFile(menuRegisterRequestDto.getMenuImages(), menuEntity);
 
         // 메뉴 상태
         registerMenuStatus(menuRegisterRequestDto.getIsBargainning(), menuEntity);
@@ -105,7 +105,7 @@ public class MenuService {
         menuStatusRepository.save(menuStatusEntity);
     }
 
-    public void registerMenuImageFile(MultipartFile[] menus, MenuEntity menuEntity) throws IOException {
+    public void registerMenuImageFile(List<MultipartFile> menus, MenuEntity menuEntity) throws IOException {
         if(menus != null){
             ArrayList<MenuFileEntity> menuFileEntities = new ArrayList<>();
 
@@ -170,7 +170,7 @@ public class MenuService {
 //        }
 //    }
 
-//    @Scheduled(fixedRate = 60000) // 60초마다 실행
+    //    @Scheduled(fixedRate = 60000) // 60초마다 실행
     public void updateBargainningEndTime(){
         log.info("*****************************************");
         List<MenuBargainningEntity> menuBargainningEntityList = menuBargainningRepository.findAll();
@@ -414,5 +414,3 @@ public class MenuService {
         return d;
     }
 }
-
-

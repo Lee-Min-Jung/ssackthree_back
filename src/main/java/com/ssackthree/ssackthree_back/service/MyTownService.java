@@ -34,7 +34,7 @@ public class MyTownService {
     private final UserLocationRepository userLocationRepository;
 
     // 상품 저장
-    public int registerProduct(TownRegisterProductRequestDto townRegisterProductRequestDto, MultipartFile[] products) throws Exception {
+    public int registerProduct(TownRegisterProductRequestDto townRegisterProductRequestDto) throws Exception {
         log.info("registerProduct 서비스 시작");
         // 상품 저장
         MyTownProductEntity myTownProductEntity = MyTownProductEntity.builder()
@@ -52,7 +52,7 @@ public class MyTownService {
 
 
         // 파일 저장
-        registerProductImageFile(products, myTownProductEntity);
+        registerProductImageFile(townRegisterProductRequestDto.getProductImages(), myTownProductEntity);
 
         log.info("registerProduct 파일 저장 완료");
 
@@ -74,7 +74,7 @@ public class MyTownService {
     }
 
     // 상품 이미지 파일 저장
-    public void registerProductImageFile(MultipartFile[] products, MyTownProductEntity myTownProductEntity) throws IOException {
+    public void registerProductImageFile(List<MultipartFile> products, MyTownProductEntity myTownProductEntity) throws IOException {
         if(products != null){
             ArrayList<MyTownProductFileEntity> productFileEntities = new ArrayList<>();
 
