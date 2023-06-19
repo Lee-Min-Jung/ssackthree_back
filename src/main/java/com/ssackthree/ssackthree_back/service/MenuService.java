@@ -353,6 +353,7 @@ public class MenuService {
 
             // 응답 dto 설정
             MenuDetailResponseDto menuDetailResponseDto = MenuDetailResponseDto.builder()
+                    .writerId(menu.get().getStoreEntity().getUserEntity().getId())
                     .menuDetail(menuDetailDto)
                     .menuOther(menuOtherDtoList)
                     .menuStore(menuStoreDto)

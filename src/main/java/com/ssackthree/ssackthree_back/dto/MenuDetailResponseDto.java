@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MenuDetailResponseDto {
 
+    private long writerId;
     private MenuDetailDto menuDetail;
     private List<MenuOtherDto> menuOther = new ArrayList<>();
     private MenuStoreDto menuStore;
