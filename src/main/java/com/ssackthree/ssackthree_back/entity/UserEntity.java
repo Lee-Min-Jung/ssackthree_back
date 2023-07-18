@@ -64,4 +64,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity")
     private List<MyTownProductEntity> myTownProductEntityList;
 
+    @OneToMany(mappedBy = "userEntity")
+    private List<ReviewEntity> reviewEntityList;
+
 }
