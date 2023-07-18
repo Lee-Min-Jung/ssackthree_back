@@ -17,12 +17,14 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    // 리뷰 작성
     @PostMapping(path = "/register")
     public int registerReview(@RequestBody ReviewRequestDto reviewRequestDto){
         reviewService.registerReview(reviewRequestDto);
         return 1;
     }
 
+    // 리뷰 보기
     @GetMapping(path = "/show/{storeId}")
     public List<ReviewResponseDto> showReview(@PathVariable(name = "storeId") long storeId){
         return reviewService.showReview(storeId);
