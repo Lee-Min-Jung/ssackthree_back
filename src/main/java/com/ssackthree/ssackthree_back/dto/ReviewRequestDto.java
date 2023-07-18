@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class ReviewRequestDto {
     private long userId;
     private long menuId;
+    private long storeId;
     private String content;
     private int score;
 }

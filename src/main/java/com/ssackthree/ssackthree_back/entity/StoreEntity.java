@@ -61,4 +61,7 @@ public class StoreEntity {
 
     @OneToMany(mappedBy = "storeEntity")
     private List<MenuEntity> menuEntityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "storeEntity")
+    private List<ReviewEntity> reviewEntityList;
 }
