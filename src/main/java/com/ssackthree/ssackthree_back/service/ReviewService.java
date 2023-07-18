@@ -1,5 +1,6 @@
 package com.ssackthree.ssackthree_back.service;
 
+import com.ssackthree.ssackthree_back.dto.MenuInDistanceResponseDto;
 import com.ssackthree.ssackthree_back.dto.ReviewRequestDto;
 import com.ssackthree.ssackthree_back.dto.ReviewResponseDto;
 import com.ssackthree.ssackthree_back.entity.ReviewEntity;
@@ -13,9 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -61,6 +60,11 @@ public class ReviewService {
                reviewResponseDtoList.add(reviewResponseDto);
            }
         }
+
+        // 리뷰 최신순으로 정렬
+        Comparator<ReviewResponseDto> createdAtComparator = Comparator.comparing(ReviewResponseDto::getCreatedDate).reversed();
+        Collections.sort(reviewResponseDtoList, createdAtComparator);
+
 
         return reviewResponseDtoList;
 
