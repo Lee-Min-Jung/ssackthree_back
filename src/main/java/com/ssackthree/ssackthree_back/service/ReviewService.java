@@ -56,7 +56,7 @@ public class ReviewService {
                        .writerName(reviewEntity.getUserEntity().getRepName())
                        .writerId(reviewEntity.getUserEntity().getId())
                        .writerProfileImagePath(reviewEntity.getUserEntity().getCustomerProfileFileEntity().getFilePath())
-                       .createdDate(reviewEntity.getCreatedDate())
+                       .createdDate(String.valueOf(reviewEntity.getCreatedDate()))
                        .build();
                reviewResponseDtoList.add(reviewResponseDto);
            }

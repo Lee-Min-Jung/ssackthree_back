@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class ReviewResponseDto {
     private long writerId;
     private String writerName;
-    private LocalDateTime createdDate;
+    private String createdDate;
     private int score;
     private String content;
     private String menuName;
