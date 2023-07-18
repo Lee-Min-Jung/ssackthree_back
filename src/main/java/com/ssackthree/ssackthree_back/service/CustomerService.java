@@ -143,7 +143,9 @@ public class CustomerService {
                 if(order.getMenuEntity().getMenuStatusEntity().getMenuStatus().equals(MenuStatusEnum.ORDER_ING) || order.getMenuEntity().getMenuStatusEntity().getMenuStatus().equals(MenuStatusEnum.ORDER_COMPLETED)){
                     OrderBargainHistoryResponseDto orderBargainHistoryResponseDto = OrderBargainHistoryResponseDto.builder()
                             .menuName(order.getMenuEntity().getName())
+                            .menuId(order.getMenuEntity().getId())
                             .storeName(order.getMenuEntity().getStoreEntity().getStoreName())
+                            .storeId(order.getMenuEntity().getStoreEntity().getId())
                             .originalPrice(order.getMenuEntity().getOriginalPrice())
                             .discountedPrice(order.getMenuEntity().getDiscountedPrice())
                             .status(order.getStatus().toString())
@@ -159,7 +161,9 @@ public class CustomerService {
             for(BargainOrderEntity bargainOrder : bargainOrderEntityList){
                 OrderBargainHistoryResponseDto orderBargainHistoryResponseDto = OrderBargainHistoryResponseDto.builder()
                         .menuName(bargainOrder.getMenuEntity().getName())
+                        .menuId(bargainOrder.getMenuEntity().getId())
                         .storeName(bargainOrder.getMenuEntity().getStoreEntity().getStoreName())
+                        .storeId(bargainOrder.getMenuEntity().getStoreEntity().getId())
                         .originalPrice(bargainOrder.getMenuEntity().getOriginalPrice())
                         .discountedPrice(bargainOrder.getBargainPrice())
                         .status(bargainOrder.getStatus().toString())

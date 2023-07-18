@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderBargainHistoryResponseDto {
     String menuName;
+    long menuId;
     String storeName;
+    long storeId;
     int originalPrice;
     int discountedPrice;
     String status;
