@@ -147,6 +147,7 @@ public class CustomerService {
                             .originalPrice(order.getMenuEntity().getOriginalPrice())
                             .discountedPrice(order.getMenuEntity().getDiscountedPrice())
                             .status(order.getStatus().toString())
+                            .date(String.valueOf(order.getCreatedDate()))
                             .build();
                     orderBargainHistoryResponseDtoList.add(orderBargainHistoryResponseDto);
                 }
@@ -162,6 +163,7 @@ public class CustomerService {
                         .originalPrice(bargainOrder.getMenuEntity().getOriginalPrice())
                         .discountedPrice(bargainOrder.getBargainPrice())
                         .status(bargainOrder.getStatus().toString())
+                        .date(String.valueOf(bargainOrder.getCreatedDate()))
                         .build();
                 orderBargainHistoryResponseDtoList.add(orderBargainHistoryResponseDto);
             }

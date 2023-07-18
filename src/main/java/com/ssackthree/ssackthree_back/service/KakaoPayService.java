@@ -11,6 +11,7 @@ import com.ssackthree.ssackthree_back.enums.OrderStatusEnum;
 import com.ssackthree.ssackthree_back.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +21,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -86,6 +88,7 @@ public class KakaoPayService {
                 .status(OrderStatusEnum.READY)
                 .menuEntity(menuRepository.findById(kakaoPayRequestDto.getMenuId()).get())
                 .userEntity(userRepository.findById(kakaoPayRequestDto.getUserId()).get())
+                .createdDate(LocalDateTime.now())
                 .build();
 
 
@@ -101,6 +104,7 @@ public class KakaoPayService {
                     .status(order.get().getStatus())
                     .menuEntity(order.get().getMenuEntity())
                     .userEntity(order.get().getUserEntity())
+                    .createdDate(order.get().getCreatedDate())
                     .build();
 
             orderRepository.save(savedOrder);
@@ -172,6 +176,7 @@ public class KakaoPayService {
                     .menuEntity(orderEntity.get().getMenuEntity())
                     .tid(orderEntity.get().getTid())
                     .status(OrderStatusEnum.COMPLETED)
+                    .createdDate(orderEntity.get().getCreatedDate())
                     .build();
             orderRepository.save(order);
         }
@@ -212,6 +217,7 @@ public class KakaoPayService {
                         .menuEntity(bargainOrder.get().getMenuEntity())
                         .userEntity(bargainOrder.get().getUserEntity())
                         .bargainPrice(bargainOrder.get().getBargainPrice())
+                        .createdDate(bargainOrder.get().getCreatedDate())
                         .build();
                 bargainOrderRepository.save(updatedBargainOrder);
             }
