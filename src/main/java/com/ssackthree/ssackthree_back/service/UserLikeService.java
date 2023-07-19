@@ -1,5 +1,6 @@
 package com.ssackthree.ssackthree_back.service;
 
+import com.ssackthree.ssackthree_back.dto.MenuLikeListResponseDto;
 import com.ssackthree.ssackthree_back.dto.StoreLikeListResponseDto;
 import com.ssackthree.ssackthree_back.dto.UserMenuLikeRequestDto;
 import com.ssackthree.ssackthree_back.dto.UserStoreLikeRequestDto;
@@ -70,6 +71,27 @@ public class UserLikeService {
     }
 
     // 메뉴 좋아요 리스트
+    public List<MenuLikeListResponseDto> menuLikeList(long userId){
+        Optional<UserEntity> user = userRepository.findById(userId);
+        List<MenuLikeListResponseDto> menuLikeListResponseDtoList = new ArrayList<>();
+
+        for(UserMenuLikeEntity ul : user.get().getUserMenuLikeEntityList()){
+            MenuLikeListResponseDto menuLikeListResponseDto = MenuLikeListResponseDto.builder()
+                    .menuName(ul.getMenuEntity().getName())
+                    .menuId(ul.getMenuEntity().getId())
+                    .menuImagePath(ul.getMenuEntity().getMenuFileEntity().get(0).getFilePath())
+                    .originalPrice(ul.getMenuEntity().getOriginalPrice())
+                    .discountedPrice(ul.getMenuEntity().getDiscountedPrice())
+                    .isBargain(ul.getMenuEntity().getIsBargainning())
+                    .storeName(ul.getMenuEntity().getStoreEntity().getStoreName())
+                    .build();
+            menuLikeListResponseDtoList.add(menuLikeListResponseDto);
+
+
+        }
+
+        return menuLikeListResponseDtoList;
+    }
 
     // 가게 좋아요 리스트
     public List<StoreLikeListResponseDto> storeLikeList(long userId){

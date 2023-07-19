@@ -38,7 +38,7 @@ public class UserEntity {
     private CustomerProfileFileEntity customerProfileFileEntity;
 
     @OneToMany(mappedBy = "userEntity")
-    private List<UserMenuLikeEntity> userLikeEntityList;
+    private List<UserMenuLikeEntity> userMenuLikeEntityList;
 
     @OneToMany(mappedBy = "userEntity")
     private List<UserStoreLikeEntity> userStoreLikeEntityList;

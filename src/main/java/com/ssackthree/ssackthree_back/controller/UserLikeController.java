@@ -1,5 +1,6 @@
 package com.ssackthree.ssackthree_back.controller;
 
+import com.ssackthree.ssackthree_back.dto.MenuLikeListResponseDto;
 import com.ssackthree.ssackthree_back.dto.StoreLikeListResponseDto;
 import com.ssackthree.ssackthree_back.dto.UserMenuLikeRequestDto;
 import com.ssackthree.ssackthree_back.dto.UserStoreLikeRequestDto;
@@ -28,6 +29,11 @@ public class UserLikeController {
     public int unlikeMenu(@RequestBody UserMenuLikeRequestDto userLikeRequestDto) throws Exception{
         userLikeService.unlikeMenu(userLikeRequestDto);
         return 1;
+    }
+
+    @GetMapping(path = "/menu/list/{userId}")
+    public List<MenuLikeListResponseDto> menuLikeList(@PathVariable(name = "userId") long userId){
+        return userLikeService.menuLikeList(userId);
     }
 
     @PostMapping(path = "/store")
