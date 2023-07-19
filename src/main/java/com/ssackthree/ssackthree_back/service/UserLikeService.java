@@ -1,5 +1,6 @@
 package com.ssackthree.ssackthree_back.service;
 
+import com.ssackthree.ssackthree_back.dto.StoreLikeListResponseDto;
 import com.ssackthree.ssackthree_back.dto.UserMenuLikeRequestDto;
 import com.ssackthree.ssackthree_back.dto.UserStoreLikeRequestDto;
 import com.ssackthree.ssackthree_back.entity.*;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,5 +67,25 @@ public class UserLikeService {
     // 가게 좋아요 취소
     public void unlikeStore(UserStoreLikeRequestDto userStoreLikeRequestDto){
         userStoreLikeRepository.deleteByUserEntityIdAndStoreEntityId(userStoreLikeRequestDto.getUserId(), userStoreLikeRequestDto.getStoreId());
+    }
+
+    // 메뉴 좋아요 리스트
+
+    // 가게 좋아요 리스트
+    public List<StoreLikeListResponseDto> storeLikeList(long userId){
+        Optional<UserEntity> user = userRepository.findById(userId);
+        List<StoreLikeListResponseDto> storeLikeListResponseDtoList = new ArrayList<>();
+
+        for(UserStoreLikeEntity ul : user.get().getUserStoreLikeEntityList()){
+            StoreLikeListResponseDto storeLikeListResponseDto = StoreLikeListResponseDto.builder()
+                    .storeName(ul.getStoreEntity().getStoreName())
+                    .storeId(ul.getStoreEntity().getId())
+                    .storeProfileImagePath(ul.getStoreEntity().getStoreProfileFileEntity().getFilePath())
+                    .address(ul.getStoreEntity().getMainAddress()+ul.getStoreEntity().getDetailAddress())
+                    .build();
+            storeLikeListResponseDtoList.add(storeLikeListResponseDto);
+        }
+
+        return storeLikeListResponseDtoList;
     }
 }
