@@ -1,9 +1,10 @@
 package com.ssackthree.ssackthree_back.service;
 
-import com.ssackthree.ssackthree_back.dto.MenuInDistanceResponseDto;
+import com.ssackthree.ssackthree_back.dto.CustomerMpReviewResponseDto;
 import com.ssackthree.ssackthree_back.dto.ReviewRequestDto;
 import com.ssackthree.ssackthree_back.dto.ReviewResponseDto;
 import com.ssackthree.ssackthree_back.entity.ReviewEntity;
+import com.ssackthree.ssackthree_back.entity.UserEntity;
 import com.ssackthree.ssackthree_back.repository.MenuRepository;
 import com.ssackthree.ssackthree_back.repository.ReviewRepository;
 import com.ssackthree.ssackthree_back.repository.StoreRepository;
@@ -68,6 +69,27 @@ public class ReviewService {
 
         return reviewResponseDtoList;
 
+
+    }
+
+    // 손님 마이페이지 리뷰 목록
+    public List<CustomerMpReviewResponseDto> customerMpReviewList(long userId){
+        Optional<UserEntity> user = userRepository.findById(userId);
+        List<CustomerMpReviewResponseDto> customerMpReviewResponseDtoList = new ArrayList<>();
+
+        for(ReviewEntity review : user.get().getReviewEntityList()){
+            CustomerMpReviewResponseDto customerMpReviewResponseDto = CustomerMpReviewResponseDto.builder()
+                    .storeName(review.getStoreEntity().getStoreName())
+                    .menuName(review.getMenuEntity().getName())
+                    .menuImagePath(review.getMenuEntity().getMenuFileEntity().get(0).getFilePath())
+                    .content(review.getContent())
+                    .createdDate(String.valueOf(review.getCreatedDate()))
+                    .score(review.getScore())
+                    .build();
+            customerMpReviewResponseDtoList.add(customerMpReviewResponseDto);
+        }
+
+        return customerMpReviewResponseDtoList;
 
     }
 }

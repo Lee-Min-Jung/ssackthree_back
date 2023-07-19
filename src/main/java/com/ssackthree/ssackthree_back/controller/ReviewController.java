@@ -1,5 +1,6 @@
 package com.ssackthree.ssackthree_back.controller;
 
+import com.ssackthree.ssackthree_back.dto.CustomerMpReviewResponseDto;
 import com.ssackthree.ssackthree_back.dto.ReviewRequestDto;
 import com.ssackthree.ssackthree_back.dto.ReviewResponseDto;
 import com.ssackthree.ssackthree_back.service.ReviewService;
@@ -28,5 +29,11 @@ public class ReviewController {
     @GetMapping(path = "/show/{storeId}")
     public List<ReviewResponseDto> showReview(@PathVariable(name = "storeId") long storeId){
         return reviewService.showReview(storeId);
+    }
+
+    // 손님 마이페이지 리뷰 리스트
+    @GetMapping(path = "/customer/mp/{userId}")
+    public List<CustomerMpReviewResponseDto> showCustomerMpReview(@PathVariable(name = "userId") long userId){
+        return reviewService.customerMpReviewList(userId);
     }
 }
