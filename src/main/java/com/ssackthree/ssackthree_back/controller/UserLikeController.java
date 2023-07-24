@@ -62,5 +62,10 @@ public class UserLikeController {
         return 1;
     }
 
+    @GetMapping(path = "/town/list/{userId}")
+    public List<UserTownLikeResponseDto> townLikeList(@PathVariable(name = "userId") long userId){
+        return userLikeService.townLikeList(userId);
+    }
+
 
 }

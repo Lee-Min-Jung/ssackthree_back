@@ -128,4 +128,27 @@ public class UserLikeService {
     public void unlikeTown(UserTownLikeRequestDto userTownLikeRequestDto){
         userTownLikeRepository.deleteByUserEntityIdAndMyTownProductEntityId(userTownLikeRequestDto.getUserId(), userTownLikeRequestDto.getTownId());
     }
+
+    //우리 동네 좋아요 목록
+    public List<UserTownLikeResponseDto> townLikeList(long userId){
+        Optional<UserEntity> user = userRepository.findById(userId);
+        List<UserTownLikeResponseDto> userTownLikeResponseDtoList = new ArrayList<>();
+
+        if(user.isPresent()){
+            for(UserTownLikeEntity ut : user.get().getUserTownLikeEntityList()){
+                UserTownLikeResponseDto userTownLikeResponseDto = UserTownLikeResponseDto.builder()
+                        .title(ut.getMyTownProductEntity().getTitle())
+                        .createdDate(String.valueOf(ut.getMyTownProductEntity().getCreatedDate()))
+                        .imagePath(ut.getMyTownProductEntity().getMyTownProductFileEntityList().get(0).getFilePath())
+                        .price(ut.getMyTownProductEntity().getPrice())
+                        .location(ut.getMyTownProductEntity().getHopingPlaceAddress())
+                        .status(String.valueOf(ut.getMyTownProductEntity().getMyTownProductStatusEntity().getProductStatus()))
+                        .build();
+
+                userTownLikeResponseDtoList.add(userTownLikeResponseDto);
+            }
+        }
+
+        return userTownLikeResponseDtoList;
+    }
 }
