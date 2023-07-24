@@ -173,6 +173,7 @@ public class MyTownService {
                     .createdDate(product.getCreatedDate().toString())
                     .price(product.getPrice())
                     .distance(productDistanceList.get(i))
+                    .isLike(isTownLike(product, townHomeRequestDto.getUserId()))
                     .imagePath(product.getMyTownProductFileEntityList().size() == 0 ? "" : product.getMyTownProductFileEntityList().get(0).getFilePath())
                     .build();
 
@@ -186,6 +187,16 @@ public class MyTownService {
         return productResponseDtoList;
 
 
+    }
+
+    // 사용자가 우리동네 상품에 좋아요 눌렀는지 확인
+    public String isTownLike(MyTownProductEntity townEntity, long userId){
+        for(UserTownLikeEntity user : townEntity.getUserTownLikeEntityList()){
+            if(user.getUserEntity().getId() == userId){
+                return "T";
+            }
+        }
+        return "F";
     }
 
     // 특정 위치 안에 있는 상품 아이디 찾기
