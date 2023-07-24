@@ -233,7 +233,7 @@ public class MyTownService {
     }
 
     // 상품 디테일
-    public TownProductDetailResponseDto getTownProductDetail(long productId){
+    public TownProductDetailResponseDto getTownProductDetail(long productId, long userId){
         MyTownProductEntity myTownProductEntity = myTownProductRepository.findById(productId).get();
 
         // 해당 상품의 판매자가 올린 다른 상품 리스트 구하기
@@ -248,6 +248,7 @@ public class MyTownService {
                 .hopingPlaceAddress(myTownProductEntity.getHopingPlaceAddress())
                 .price(myTownProductEntity.getPrice())
                 .status(myTownProductEntity.getMyTownProductStatusEntity().getProductStatus().toString())
+                .isLike(isTownLike(myTownProductEntity, userId))
                 .imagePath(myTownProductEntity.getMyTownProductFileEntityList().size() == 0 ? "" : myTownProductEntity.getMyTownProductFileEntityList().get(0).getFilePath())
                 .townOtherProductResponseDtoList(townOtherProductResponseDtoList)
                 .build();

@@ -22,6 +22,7 @@ public class TownProductDetailResponseDto {
     private String createdDate;
     private String content;
     private String imagePath;
+    private String isLike;
     private List<TownOtherProductResponseDto> townOtherProductResponseDtoList = new ArrayList<>();
 
 }

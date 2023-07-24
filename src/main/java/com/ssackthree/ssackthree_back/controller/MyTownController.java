@@ -29,8 +29,8 @@ public class MyTownController {
         return myTownService.getTownProductList(townHomeRequestDto);
     }
 
-    @GetMapping("list/detail/{productId}")
-    public TownProductDetailResponseDto getTownProductDetail(@PathVariable(name = "productId") long productId){
-        return myTownService.getTownProductDetail(productId);
+    @GetMapping("list/detail/{productId}/{userId}")
+    public TownProductDetailResponseDto getTownProductDetail(@PathVariable(name = "productId") long productId, @PathVariable(name = "userId") long userId){
+        return myTownService.getTownProductDetail(productId, userId);
     }
 }
