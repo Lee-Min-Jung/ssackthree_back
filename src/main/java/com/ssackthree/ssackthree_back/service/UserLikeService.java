@@ -1,9 +1,6 @@
 package com.ssackthree.ssackthree_back.service;
 
-import com.ssackthree.ssackthree_back.dto.MenuLikeListResponseDto;
-import com.ssackthree.ssackthree_back.dto.StoreLikeListResponseDto;
-import com.ssackthree.ssackthree_back.dto.UserMenuLikeRequestDto;
-import com.ssackthree.ssackthree_back.dto.UserStoreLikeRequestDto;
+import com.ssackthree.ssackthree_back.dto.*;
 import com.ssackthree.ssackthree_back.entity.*;
 import com.ssackthree.ssackthree_back.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +20,8 @@ public class UserLikeService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
     private final UserStoreLikeRepository userStoreLikeRepository;
+    private final MyTownProductRepository myTownProductRepository;
+    private final UserTownLikeRepository userTownLikeRepository;
 
 
     // 메뉴 좋아요
@@ -109,5 +108,24 @@ public class UserLikeService {
         }
 
         return storeLikeListResponseDtoList;
+    }
+
+    // 우리 동네 좋아요
+    public void likeTown(UserTownLikeRequestDto userTownLikeRequestDto){
+        Optional<UserEntity> user = userRepository.findById(userTownLikeRequestDto.getUserId());
+        Optional<MyTownProductEntity> myTownProduct = myTownProductRepository.findById(userTownLikeRequestDto.getTownId());
+
+        if(user.isPresent() && myTownProduct.isPresent()){
+            UserTownLikeEntity userTownLikeEntity = UserTownLikeEntity.builder()
+                    .userEntity(user.get())
+                    .myTownProductEntity(myTownProduct.get())
+                    .build();
+
+            userTownLikeRepository.save(userTownLikeEntity);
+        }
+    }
+    // 우리 동네 좋아요 취소
+    public void unlikeTown(UserTownLikeRequestDto userTownLikeRequestDto){
+        userTownLikeRepository.deleteByUserEntityIdAndMyTownProductEntityId(userTownLikeRequestDto.getUserId(), userTownLikeRequestDto.getTownId());
     }
 }

@@ -1,9 +1,6 @@
 package com.ssackthree.ssackthree_back.controller;
 
-import com.ssackthree.ssackthree_back.dto.MenuLikeListResponseDto;
-import com.ssackthree.ssackthree_back.dto.StoreLikeListResponseDto;
-import com.ssackthree.ssackthree_back.dto.UserMenuLikeRequestDto;
-import com.ssackthree.ssackthree_back.dto.UserStoreLikeRequestDto;
+import com.ssackthree.ssackthree_back.dto.*;
 import com.ssackthree.ssackthree_back.service.UserLikeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +48,18 @@ public class UserLikeController {
     @GetMapping(path = "/store/list/{userId}")
     public List<StoreLikeListResponseDto> storeLikeList(@PathVariable(name = "userId") long userId){
         return userLikeService.storeLikeList(userId);
+    }
+
+    @PostMapping(path = "/town")
+    public int likeTown(@RequestBody UserTownLikeRequestDto userTownRequestDto) throws Exception{
+        userLikeService.likeTown(userTownRequestDto);
+        return 1;
+    }
+
+    @DeleteMapping(path = "/town")
+    public int unlikeTown(@RequestBody UserTownLikeRequestDto userTownRequestDto) throws Exception{
+        userLikeService.unlikeTown(userTownRequestDto);
+        return 1;
     }
 
 

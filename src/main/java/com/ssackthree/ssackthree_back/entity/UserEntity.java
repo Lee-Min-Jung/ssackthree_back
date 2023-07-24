@@ -70,4 +70,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity")
     private List<ReviewEntity> reviewEntityList;
 
+    @OneToMany(mappedBy = "userEntity")
+    private List<UserTownLikeEntity> userTownLikeEntityList;
+
 }
