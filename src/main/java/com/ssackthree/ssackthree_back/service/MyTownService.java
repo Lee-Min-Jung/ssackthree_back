@@ -10,7 +10,6 @@ import com.ssackthree.ssackthree_back.util.FileService;
 import com.ssackthree.ssackthree_back.util.LocationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.entity.FileEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -274,6 +273,30 @@ public class MyTownService {
 
         return townOtherProductResponseDtoList;
 
+    }
+
+    // 마이페이지 우리동네 판매 내역
+    public List<TownProductResponseDto> getTownSellList(TownSellListRequestDto townSellListRequestDto){
+        Optional<UserEntity> user = userRepository.findById(townSellListRequestDto.getUserId());
+        List<TownProductResponseDto> townProductResponseDtoList = new ArrayList<>();
+
+        if(user.isPresent()){
+            for(MyTownProductEntity tp : user.get().getMyTownProductEntityList()){
+                if(tp.getMyTownProductStatusEntity().getProductStatus().toString().equals(townSellListRequestDto.getType())){
+                    TownProductResponseDto townProductResponseDto = TownProductResponseDto.builder()
+                            .productId(tp.getId())
+                            .price(tp.getPrice())
+                            .title(tp.getTitle())
+                            .createdDate(String.valueOf(tp.getCreatedDate()))
+                            .hopingPlaceAddress(tp.getHopingPlaceAddress())
+                            .imagePath(tp.getMyTownProductFileEntityList().get(0).getFilePath())
+                            .build();
+                    townProductResponseDtoList.add(townProductResponseDto);
+                }
+            }
+        }
+
+        return townProductResponseDtoList;
     }
 
 }

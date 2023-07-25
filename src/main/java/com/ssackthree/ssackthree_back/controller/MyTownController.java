@@ -33,4 +33,9 @@ public class MyTownController {
     public TownProductDetailResponseDto getTownProductDetail(@PathVariable(name = "productId") long productId, @PathVariable(name = "userId") long userId){
         return myTownService.getTownProductDetail(productId, userId);
     }
+
+    @PostMapping("sell/list")
+    public List<TownProductResponseDto> getTownProductSellList(@RequestBody TownSellListRequestDto townSellListRequestDto){
+        return myTownService.getTownSellList(townSellListRequestDto);
+    }
 }
