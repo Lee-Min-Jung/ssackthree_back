@@ -5,7 +5,6 @@ import com.ssackthree.ssackthree_back.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,6 +37,11 @@ public class MenuController {
     @PostMapping(path = "get/store")
     public List<StoreMenuListResponseDto> getStoreMenuList(@RequestBody StoreMenuListRequestDto storeMenuListRequestDto){
         return menuService.getStoreMenuList(storeMenuListRequestDto);
+    }
+
+    @GetMapping(path = "get/mypage/beforesell/{userId}")
+    public List<MyPageSellListResponseDto> getMypageSellCompleteList(@PathVariable(name = "userId") long userId){
+        return menuService.getMyPageSellCompleteList(userId);
     }
 
 }

@@ -365,6 +365,31 @@ public class MenuService {
         return null;
     }
 
+    // 점주 마이페이지 이전 판매 내역
+    public List<MyPageSellListResponseDto> getMyPageSellCompleteList(long userId){
+        Optional<StoreEntity> store = storeRepository.findByUserEntityId(userId);
+        List<MyPageSellListResponseDto> myPageBeforeSellListResponseDtoList = new ArrayList<>();
+
+        if(store.isPresent()){
+            for(MenuEntity m : store.get().getMenuEntityList()){
+                if(m.getMenuStatusEntity().getMenuStatus().toString().equals("ORDER_COMPLETED") || m.getMenuStatusEntity().getMenuStatus().toString().equals("BARGAIN_SUCCESS")){
+                    MyPageSellListResponseDto myPageSellListResponseDto = MyPageSellListResponseDto.builder()
+                            .menuName(m.getName())
+                            .originalPrice(m.getOriginalPrice())
+                            .discountedPrice(m.getDiscountedPrice())
+                            .imagePath(m.getMenuFileEntity().get(0).getFilePath())
+                            .isBargain(m.getIsBargainning())
+                            .date(String.valueOf(m.getOrderEntity().getCreatedDate()))
+                            .buyer(m.getOrderEntity().getUserEntity().getRepName())
+                            .build();
+                    myPageBeforeSellListResponseDtoList.add(myPageSellListResponseDto);
+                }
+            }
+        }
+
+        return myPageBeforeSellListResponseDtoList;
+    }
+
 
     public List<MenuInDistanceResponseDto> sort(HomePageRequestDto homePageRequestDto, List<MenuInDistanceResponseDto> menuInDistanceResponseDto){
         Comparator<MenuInDistanceResponseDto> createdAtComparator = Comparator.comparing(MenuInDistanceResponseDto::getCreatedDate).reversed();
