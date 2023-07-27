@@ -299,4 +299,25 @@ public class MyTownService {
         return townProductResponseDtoList;
     }
 
+    // 판매 완료로 게시글 수정
+    public void updateTownProductStats(TownProductStatusUpdateRequestDto townProductStatusUpdateRequestDto){
+        // 기존 상태 삭제
+        myTownProductStatusRepository.deleteByMyTownProductEntityId(townProductStatusUpdateRequestDto.getTownProductId());
+
+        // 수정한 상태 저장
+        TownProductStatusEnum status = TownProductStatusEnum.SALE_COMPLETE;
+        if(townProductStatusUpdateRequestDto.getStatus().equals("I")){
+            status = TownProductStatusEnum.SALE_ING;
+        }else if(townProductStatusUpdateRequestDto.getStatus().equals("C")){
+            status = TownProductStatusEnum.SALE_COMPLETE;
+        }
+
+        MyTownProductStatusEntity myTownProductStatusEntity = MyTownProductStatusEntity.builder()
+                .productStatus(status)
+                .myTownProductEntity(myTownProductRepository.findById(townProductStatusUpdateRequestDto.getTownProductId()).get())
+                .build();
+
+        myTownProductStatusRepository.save(myTownProductStatusEntity);
+    }
+
 }

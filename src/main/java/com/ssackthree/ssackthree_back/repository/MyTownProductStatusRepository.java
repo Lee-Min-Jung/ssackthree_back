@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MyTownProductStatusRepository extends JpaRepository<MyTownProductStatusEntity, Long> {
+    void deleteByMyTownProductEntityId(long id);
 }

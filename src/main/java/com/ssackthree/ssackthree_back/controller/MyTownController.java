@@ -38,4 +38,10 @@ public class MyTownController {
     public List<TownProductResponseDto> getTownProductSellList(@RequestBody TownSellListRequestDto townSellListRequestDto){
         return myTownService.getTownSellList(townSellListRequestDto);
     }
+
+    @PostMapping("update/status")
+    public int updateTownProductStatus(@RequestBody TownProductStatusUpdateRequestDto townProductStatusUpdateRequestDto){
+        myTownService.updateTownProductStats(townProductStatusUpdateRequestDto);
+        return 1;
+    }
 }
