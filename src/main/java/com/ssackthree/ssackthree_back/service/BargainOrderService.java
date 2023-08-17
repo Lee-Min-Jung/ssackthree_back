@@ -4,15 +4,10 @@ import com.ssackthree.ssackthree_back.dto.BargainAcceptDenyRequestDto;
 import com.ssackthree.ssackthree_back.dto.BargainListResponseDto;
 import com.ssackthree.ssackthree_back.dto.BargainOrderRequestDto;
 import com.ssackthree.ssackthree_back.dto.BeforeOrderResponseDto;
-import com.ssackthree.ssackthree_back.entity.BargainOrderEntity;
-import com.ssackthree.ssackthree_back.entity.MenuEntity;
-import com.ssackthree.ssackthree_back.entity.MenuStatusEntity;
+import com.ssackthree.ssackthree_back.entity.*;
 import com.ssackthree.ssackthree_back.enums.BargainStatusEnum;
 import com.ssackthree.ssackthree_back.enums.MenuStatusEnum;
-import com.ssackthree.ssackthree_back.repository.BargainOrderRepository;
-import com.ssackthree.ssackthree_back.repository.MenuRepository;
-import com.ssackthree.ssackthree_back.repository.MenuStatusRepository;
-import com.ssackthree.ssackthree_back.repository.UserRepository;
+import com.ssackthree.ssackthree_back.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,6 +28,7 @@ public class BargainOrderService {
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
     private final MenuStatusRepository menuStatusRepository;
+    private final NoticeService noticeService;
 
 
     // 흥정 주문
@@ -45,7 +41,12 @@ public class BargainOrderService {
                 .createdDate(LocalDateTime.now())
                 .build();
         bargainOrderRepository.save(bargainOrderEntity);
+
+        // 점주에게 흥정 공지 보내기
+        noticeService.sendBargainNoticeToStore(userRepository.findById(bargainOrderRequestDto.getUserId()).get(), menuRepository.findById(bargainOrderRequestDto.getMenuId()).get(), bargainOrderRequestDto.getBargainPrice());
     }
+
+
 
     // 메뉴별 흥정 내역
     public List<BargainListResponseDto> bargainList(long menuId){

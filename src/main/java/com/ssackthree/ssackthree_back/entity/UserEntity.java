@@ -73,4 +73,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity")
     private List<UserTownLikeEntity> userTownLikeEntityList;
 
+    @OneToOne(mappedBy = "userEntity")
+    private StoreNoticeEntity storeNoticeEntity;
+
 }
