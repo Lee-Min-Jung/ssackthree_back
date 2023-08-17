@@ -64,7 +64,4 @@ public class StoreEntity {
 
     @OneToMany(mappedBy = "storeEntity")
     private List<ReviewEntity> reviewEntityList;
-
-    @OneToMany(mappedBy = "storeEntity")
-    private List<StoreNoticeEntity> storeNoticeEntityList;
 }

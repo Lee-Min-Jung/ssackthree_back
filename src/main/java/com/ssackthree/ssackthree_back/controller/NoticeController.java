@@ -10,4 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/notice")
 public class NoticeController {
+
+
 }

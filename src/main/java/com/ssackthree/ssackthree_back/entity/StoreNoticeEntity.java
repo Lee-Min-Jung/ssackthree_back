@@ -32,11 +32,6 @@ public class StoreNoticeEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDate;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id")
-    private StoreEntity storeEntity;
-
-
     @OneToOne
     @JoinColumn(name = "menu_id")
     private MenuEntity menuEntity;

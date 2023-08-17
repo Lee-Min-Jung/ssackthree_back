@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 public class NoticeService {
 
     private final StoreNoticeRepository storeNoticeRepository;
-    private final MenuRepository menuRepository;
 
     public void sendBargainNoticeToStore(UserEntity user, MenuEntity menu, int bargainPrice){
         // 흥정 내용 추출
@@ -29,9 +28,8 @@ public class NoticeService {
         StoreNoticeEntity storeNoticeEntity = StoreNoticeEntity.builder()
                 .menuEntity(menu)
                 .userEntity(user)
-                .storeEntity(menuRepository.findById(menu.getId()).get().getStoreEntity())
                 .title("흥정 제안")
-                .content(proposer + "님이 " + menuName + "에 " + String.valueOf(bargainPrice) + " 원을 제안했습니다.")
+                .content(proposer + "님이 " + menuName + "에 " + String.valueOf(bargainPrice) + "원을 제안했습니다.")
                 .createdDate(LocalDateTime.now())
                 .build();
 
