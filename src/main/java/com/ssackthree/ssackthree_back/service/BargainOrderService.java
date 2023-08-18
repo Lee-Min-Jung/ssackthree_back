@@ -35,7 +35,7 @@ public class BargainOrderService {
     public void bargainOrder(BargainOrderRequestDto bargainOrderRequestDto){
         BargainOrderEntity bargainOrderEntity = BargainOrderEntity.builder()
                 .menuEntity(menuRepository.findById(bargainOrderRequestDto.getMenuId()).get())
-                .userEntity(userRepository.findById(bargainOrderRequestDto.getUserId()).get())
+                .userEntity(userRepository.findById(bargainOrderRequestDto.getProposerUserId()).get())
                 .bargainPrice(bargainOrderRequestDto.getBargainPrice())
                 .status(BargainStatusEnum.BARGAIN_ACTIVE)
                 .createdDate(LocalDateTime.now())
@@ -43,7 +43,7 @@ public class BargainOrderService {
         bargainOrderRepository.save(bargainOrderEntity);
 
         // 점주에게 흥정 공지 보내기
-        noticeService.sendBargainNoticeToStore(userRepository.findById(bargainOrderRequestDto.getUserId()).get(), menuRepository.findById(bargainOrderRequestDto.getMenuId()).get(), bargainOrderRequestDto.getBargainPrice());
+        noticeService.sendBargainNoticeToStore(bargainOrderRequestDto);
     }
 
 

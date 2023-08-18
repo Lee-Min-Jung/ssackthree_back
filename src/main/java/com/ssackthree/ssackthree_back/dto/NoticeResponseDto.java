@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BargainOrderRequestDto {
-
-    private long receiverUserId;
-    private long proposerUserId;
-    private long menuId;
-    private int bargainPrice;
+public class NoticeResponseDto {
+    String title;
+    String content;
+    String createdDate;
 }

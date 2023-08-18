@@ -65,11 +65,6 @@ public class MenuEntity {
     @OneToMany(mappedBy = "menuEntity")
     private List<ReviewEntity> reviewEntityList;
 
-    @OneToOne(mappedBy = "menuEntity")
-    private StoreNoticeEntity storeNoticeEntity;
-
-
-
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

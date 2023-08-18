@@ -33,10 +33,6 @@ public class StoreNoticeEntity {
     private LocalDateTime createdDate;
 
     @OneToOne
-    @JoinColumn(name = "menu_id")
-    private MenuEntity menuEntity;
-
-    @OneToOne
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 }
