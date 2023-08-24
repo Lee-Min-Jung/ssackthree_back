@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class LocationService {
     public static final double EARTH_RADIUS = 6371.0088; // 지구 반지름 상수 선언
 
     // 주소 가지고 위도 경도 구하기
-    public LatLng getLocation(String address) throws Exception{
+    public LatLng getLocation(String address) throws Exception {
         if(address.equals("")){
             return null;
         }

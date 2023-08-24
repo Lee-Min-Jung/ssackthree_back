@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -72,9 +73,20 @@ public class StoreService {
         storeRepository.save(storeEntity);
 
         // 가게 위도 경도 저장
-       registerLocation(storeEntity, storeRegisterRequestDto.getMainAddress());
+        registerLocation(storeEntity, storeRegisterRequestDto.getMainAddress());
 
         // 프로필 사진 저장
+        registerProfileImage(profile, storeEntity);
+
+        // 가게 메뉴 파일 저장
+        registerMenuImage(menus, storeEntity);
+
+
+
+    }
+
+    // 가게 등록 중 프로필 사진 저장
+    public void registerProfileImage(MultipartFile profile, StoreEntity storeEntity) throws Exception{
         if(profile != null){
             String savedProfileFileName = fileService.getSavedFileName(profile);
 
@@ -91,8 +103,10 @@ public class StoreService {
             storeProfileFileRepository.save(storeProfileFileEntity);
 
         }
+    }
 
-        // 가게 메뉴 저장
+    // 가게 등록 중 메뉴 이미지 저장
+    public void registerMenuImage(MultipartFile[] menus, StoreEntity storeEntity) throws Exception{
         if(menus != null && menus.length != 0){
             ArrayList<StoreMenuFileEntity> storeMenuFileEntities = new ArrayList<>();
 
@@ -100,7 +114,7 @@ public class StoreService {
                 String savedMenuFileName = fileService.getSavedFileName(menu);
 
                 // s3에 파일 업로드
-                fileService.uploadFile(profile, savedMenuFileName);
+                fileService.uploadFile(menu, savedMenuFileName);
 
                 // Db 내용 저장
                 StoreMenuFileEntity storeMenuFileEntity = StoreMenuFileEntity.builder()
@@ -114,11 +128,9 @@ public class StoreService {
             storeMenuFileRepository.saveAll(storeMenuFileEntities);
 
         }
-
-
-
     }
 
+    // 가게 등록 중 가게 위치 저장
     public void registerLocation(StoreEntity storeEntity, String address) throws Exception{
         LatLng location = locationService.getLocation(address);
         if(location != null){

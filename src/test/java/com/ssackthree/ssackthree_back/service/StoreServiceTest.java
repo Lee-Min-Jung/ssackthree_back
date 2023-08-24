@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
@@ -33,12 +35,5 @@ class StoreServiceTest {
 
     }
 
-    @Test
-    @DisplayName("위도경도 얻기 테스트")
-    public void 위도경도() throws Exception{
-        String addr = "서울특별시 용산구 한강대로 306";
-        LatLng location = storeService.getLocation(addr);
-        System.out.println(location.lat);
-        System.out.println(location.lng);
-    }
+
 }
