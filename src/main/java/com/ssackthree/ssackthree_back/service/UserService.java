@@ -43,7 +43,7 @@ public class UserService {
 
 
 
-
+    // 회원가입
     public void join(JoinRequestDto joinRequestDto) throws Exception{
         RoleEnum role = joinRequestDto.getRole().equals("customer") ? RoleEnum.ROLE_CUSTOMER : RoleEnum.ROLE_STORE;
 
@@ -58,6 +58,7 @@ public class UserService {
 
     }
 
+    // 로그인
     public TokenResponseDto login(LoginRequestDto loginRequestDto) throws Exception{
         UserEntity user = userRepository.findByUsername(loginRequestDto.getUsername()).orElseThrow(() ->
                 new BadCredentialsException("잘못된 계정정보입니다."));
@@ -69,21 +70,4 @@ public class UserService {
         return jwtProvider.generateToken(user);
     }
 
-
-
-//    public String setNickname(CustomerNicknameRequestDto customerNicknameRequestDto) throws Exception{
-//        long id = customerNicknameRequestDto.getUserId();
-//        Optional<UserEntity> user = userRepository.findById(id);
-//        if(user.isPresent()){
-//            UserEntity userEntity = UserEntity.builder()
-//                    .id(id)
-//                    .repName(customerNicknameRequestDto.getNickname())
-//                    .password(user.get().getPassword())
-//                    .username(user.get().getUsername())
-//                    .role(user.get().getRole())
-//                    .build();
-//            userRepository.save(userEntity);
-//        }
-//        return "success";
-//    }
 }

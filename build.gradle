@@ -41,7 +41,7 @@ dependencies {
     implementation 'com.google.code.geocoder-java:geocoder-java:0.16'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.29'
 
 
 }
