@@ -25,20 +25,18 @@ import java.util.*;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
-    private final StoreLocationRepository storeLocationRepository;
     private final MenuLocationRepository menuLocationRepository;
     private final MenuFileRepository menuFileRepository;
     private final MenuStatusRepository menuStatusRepository;
     private final MenuBargainningRepository menuBargainningRepository;
-    private final UserMenuLikeRepository userLikeRepository;
     private final FileService fileService;
     private final UserLocationRepository userLocationRepository;
-    private final UserRepository userRepository;
 
     public static final double EARTH_RADIUS = 6371.0088; // 지구 반지름 상수 선언
 
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    // 점주 메뉴 등록
     public void registerMenu(MenuRegisterRequestDto menuRegisterRequestDto) throws IOException {
 
         MenuTypeEnum menuTypeEnum = getMenuType(menuRegisterRequestDto.getType());
@@ -72,6 +70,7 @@ public class MenuService {
         }
     }
 
+    // 메뉴 등록 중 흥정 내용 저장
     public void registerMenuBargainning(int limitTime, int minPrice, MenuEntity menuEntity){
         MenuBargainningEntity menuBargainningEntity = MenuBargainningEntity.builder()
                 .limitTime(limitTime)
@@ -83,15 +82,7 @@ public class MenuService {
         menuBargainningRepository.save(menuBargainningEntity);
     }
 
-    public LocalDateTime getAfterTime(int period){
-        LocalDateTime currentTime = LocalDateTime.now();
-        LocalDateTime afterTime = currentTime.plusMinutes(period);
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        String formattedAfterTime = afterTime.format(formatter);
-        return afterTime;
-    }
-
-
+    // 메뉴 등록 중 메뉴 상태 저장
     public void registerMenuStatus(String isBargainning, MenuEntity menuEntity){
         MenuStatusEnum menuStatusEnum = MenuStatusEnum.ORDER_ING;
         if(isBargainning.equals("T")){
@@ -105,6 +96,7 @@ public class MenuService {
         menuStatusRepository.save(menuStatusEntity);
     }
 
+    // 메뉴 등록 중 메뉴 이미지 저장
     public void registerMenuImageFile(List<MultipartFile> menus, MenuEntity menuEntity) throws IOException {
         if(menus != null){
             ArrayList<MenuFileEntity> menuFileEntities = new ArrayList<>();
@@ -129,6 +121,7 @@ public class MenuService {
         }
     }
 
+    // 메뉴 등록 중 메뉴 위치 저장
     public void registerMenuLocation(StoreLocationEntity storeLocationEntity, MenuEntity menuEntity){
         MenuLocationEntity menuLocationEntity = MenuLocationEntity.builder()
                 .latitude(storeLocationEntity.getLatitude())
@@ -138,6 +131,16 @@ public class MenuService {
         menuLocationRepository.save(menuLocationEntity);
     }
 
+    // 특정 시간 지난 결과 구하기
+    public LocalDateTime getAfterTime(int period){
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime afterTime = currentTime.plusMinutes(period);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        String formattedAfterTime = afterTime.format(formatter);
+        return afterTime;
+    }
+
+    // 메뉴 등록 중 메뉴 type 구하기
     public MenuTypeEnum getMenuType(String menuTypeStr){
         switch (menuTypeStr){
             case "EXPIRATION":
@@ -171,26 +174,26 @@ public class MenuService {
 //    }
 
     //    @Scheduled(fixedRate = 60000) // 60초마다 실행
-    public void updateBargainningEndTime(){
-        log.info("*****************************************");
-        List<MenuBargainningEntity> menuBargainningEntityList = menuBargainningRepository.findAll();
-
-        for(MenuBargainningEntity menuBargainning : menuBargainningEntityList){
-            if(menuBargainning.getBargainEnd().isBefore(LocalDateTime.now())){ // 마감 시간 지남
-                if(menuBargainning.getMenuEntity().getBargainOrderEntityList().size() == 0){ // 흥정 주문 0개
-                    LocalDateTime updatedBargainEnd = getAfterTime(menuBargainning.getLimitTime());
-                    MenuBargainningEntity menuBargainningEntity = MenuBargainningEntity.builder()
-                            .id(menuBargainning.getId())
-                            .limitTime(menuBargainning.getLimitTime())
-                            .minPrice(menuBargainning.getMinPrice())
-                            .menuEntity(menuBargainning.getMenuEntity())
-                            .bargainEnd(updatedBargainEnd)
-                            .build();
-                    menuBargainningRepository.save(menuBargainningEntity);
-                }
-            }
-        }
-    }
+//    public void updateBargainningEndTime(){
+//        log.info("*****************************************");
+//        List<MenuBargainningEntity> menuBargainningEntityList = menuBargainningRepository.findAll();
+//
+//        for(MenuBargainningEntity menuBargainning : menuBargainningEntityList){
+//            if(menuBargainning.getBargainEnd().isBefore(LocalDateTime.now())){ // 마감 시간 지남
+//                if(menuBargainning.getMenuEntity().getBargainOrderEntityList().size() == 0){ // 흥정 주문 0개
+//                    LocalDateTime updatedBargainEnd = getAfterTime(menuBargainning.getLimitTime());
+//                    MenuBargainningEntity menuBargainningEntity = MenuBargainningEntity.builder()
+//                            .id(menuBargainning.getId())
+//                            .limitTime(menuBargainning.getLimitTime())
+//                            .minPrice(menuBargainning.getMinPrice())
+//                            .menuEntity(menuBargainning.getMenuEntity())
+//                            .bargainEnd(updatedBargainEnd)
+//                            .build();
+//                    menuBargainningRepository.save(menuBargainningEntity);
+//                }
+//            }
+//        }
+//    }
 
     // 점주 홈페이지 화면 메뉴 리스트
     public List<StoreMenuListResponseDto> getStoreMenuList(StoreMenuListRequestDto storeMenuListRequestDto){
