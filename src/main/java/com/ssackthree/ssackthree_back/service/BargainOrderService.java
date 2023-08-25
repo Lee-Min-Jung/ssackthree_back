@@ -43,7 +43,7 @@ public class BargainOrderService {
         bargainOrderRepository.save(bargainOrderEntity);
 
         // 점주에게 흥정 공지 보내기
-        noticeService.sendBargainNoticeToStore(bargainOrderRequestDto);
+//        noticeService.sendBargainNoticeToStore(bargainOrderRequestDto);
     }
 
 
@@ -125,7 +125,7 @@ public class BargainOrderService {
     }
     // 흥정 수락
     public void acceptBargain(BargainAcceptDenyRequestDto bargainAcceptRequestDto){
-        // 흥정 수락된 메뉴에 흥정 제안한 다른 메뉴의 흥정 주문 상태 바꾸기
+        // 흥정 수락된 메뉴에 흥정 제안한 다른 흥정 제안의 흥정 주문 상태 바꾸기
         Optional<List<BargainOrderEntity>> bargainOrderEntityList = bargainOrderRepository.findByMenuEntityId(bargainAcceptRequestDto.getMenuId());
         if(bargainOrderEntityList.isPresent()){
             for(BargainOrderEntity bargainOrder : bargainOrderEntityList.get()){
@@ -135,6 +135,8 @@ public class BargainOrderService {
                         .userEntity(bargainOrder.getUserEntity())
                         .bargainPrice(bargainOrder.getBargainPrice())
                         .status(BargainStatusEnum.BARGAIN_FAIL)
+                        .modifiedDate(LocalDateTime.now())
+                        .createdDate(bargainOrder.getCreatedDate())
                         .build();
                 bargainOrderRepository.save(bargainOrderEntity);
             }
@@ -155,6 +157,7 @@ public class BargainOrderService {
         }
     }
 
+    // 흥정 주문 상태 바꾸기
     public void changeBargainOrderStatus(BargainAcceptDenyRequestDto bargainAcceptDenyRequestDto, BargainStatusEnum bargainStatusEnum){
         Optional<BargainOrderEntity> bargainOrderEntity = bargainOrderRepository.findByMenuEntityIdAndUserEntityId(bargainAcceptDenyRequestDto.getMenuId(), bargainAcceptDenyRequestDto.getUserId());
         if(bargainOrderEntity.isPresent()){
@@ -164,6 +167,8 @@ public class BargainOrderService {
                     .status(bargainStatusEnum)
                     .menuEntity(bargainOrderEntity.get().getMenuEntity())
                     .userEntity(bargainOrderEntity.get().getUserEntity())
+                    .modifiedDate(LocalDateTime.now())
+                    .createdDate(bargainOrderEntity.get().getCreatedDate())
                     .build();
             bargainOrderRepository.save(bargainOrder);
         }

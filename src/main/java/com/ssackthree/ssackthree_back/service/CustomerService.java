@@ -99,6 +99,7 @@ public class CustomerService {
         return null;
     }
 
+    // 위치 등록
     public void registerLocation(SetLocationRequestDto setLocationRequestDto) throws Exception {
         LatLng location = locationService.getLocation(setLocationRequestDto.getAddress());
         if(location != null){
@@ -116,6 +117,7 @@ public class CustomerService {
         }
     }
 
+    // 위치 등록 내역
     public List<CustomerLocationHistoryResponseDto> getLocationList(long userId){
         List<CustomerLocationHistoryResponseDto> locationList = new ArrayList<>();
         for(UserLocationEntity userLocation : userLocationRepository.findTop5ByUserEntityIdOrderByCreatedDateDesc(userId).get()){

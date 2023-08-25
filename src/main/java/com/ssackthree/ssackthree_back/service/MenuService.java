@@ -7,6 +7,7 @@ import com.ssackthree.ssackthree_back.enums.MenuTypeEnum;
 import com.ssackthree.ssackthree_back.repository.*;
 import com.ssackthree.ssackthree_back.service.customizedClass.MenuIdDistance;
 import com.ssackthree.ssackthree_back.util.FileService;
+import com.ssackthree.ssackthree_back.util.LocationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class MenuService {
     private final MenuBargainningRepository menuBargainningRepository;
     private final FileService fileService;
     private final UserLocationRepository userLocationRepository;
+    private final LocationService locationService;
 
     public static final double EARTH_RADIUS = 6371.0088; // 지구 반지름 상수 선언
 
@@ -224,18 +226,15 @@ public class MenuService {
 
     }
 
+    // 손님 홈페이지 화면 메뉴 리스트
     public List<MenuInDistanceResponseDto> getMenuListInDistance(HomePageRequestDto homePageRequestDto){
 
         // 흥정 조건과 메뉴 타입 조건에 맞는 id 리스트
         List<Long> menuIdListForBarginAndType = menuRepository.findIdsByIsBargainningAndTypeIn(homePageRequestDto.getIsBargainning(), homePageRequestDto.getTypeList());
-        log.info("****");
-        log.info(String.valueOf(menuIdListForBarginAndType.size()));
         // 해당 유저가 설정한 위치 정보
         Optional<UserLocationEntity> userLocation = userLocationRepository.findTopByUserEntityIdOrderByCreatedDateDesc(homePageRequestDto.getUserId());
         // 위의 조건 만족하면서 거리 안에 있는 id와 거리 리스트
         List<MenuIdDistance> idDistanceList = getMenuIdDistance(userLocation.get(), menuIdListForBarginAndType);
-        log.info("?????");
-        log.info(String.valueOf(idDistanceList.size()));
         List<Long> menuIdList = new ArrayList<>();
         List<Double> menuDistanceList = new ArrayList<>();
 
@@ -276,6 +275,21 @@ public class MenuService {
 
 
 
+    }
+
+    // 특정 위치 안에 있는지 확인
+    public List<MenuIdDistance> getMenuIdDistance(UserLocationEntity userLocation, List<Long> idList){
+        List<MenuLocationEntity> menuLocationEntityList = menuLocationRepository.findAll();
+        List<MenuIdDistance> menuIdDistanceList = new ArrayList<>();
+        for(MenuLocationEntity menuLocation : menuLocationEntityList){
+            if(idList.contains(menuLocation.getMenuEntity().getId())){
+                double distance = locationService.getDistance(userLocation.getLatitude(), userLocation.getLongitude(), menuLocation.getLatitude(), menuLocation.getLongitude());
+                if(distance <= userLocation.getM()){
+                    menuIdDistanceList.add(new MenuIdDistance(menuLocation.getMenuEntity().getId(), distance));
+                }
+            }
+        }
+        return menuIdDistanceList;
     }
 
     // 사용자가 메뉴에 좋아요 눌렀는지 확인
@@ -415,30 +429,5 @@ public class MenuService {
 
     }
 
-    public List<MenuIdDistance> getMenuIdDistance(UserLocationEntity userLocation, List<Long> idList){
-        log.info("getMenuIdDistance");
-        List<MenuLocationEntity> menuLocationEntityList = menuLocationRepository.findAll();
-        log.info("findAll 끝");
-        List<MenuIdDistance> menuIdDistanceList = new ArrayList<>();
-        for(MenuLocationEntity menuLocation : menuLocationEntityList){
-            if(idList.contains(menuLocation.getMenuEntity().getId())){
-                double distance = getDistance(userLocation.getLatitude(), userLocation.getLongitude(), menuLocation.getLatitude(), menuLocation.getLongitude());
-                if(distance <= userLocation.getM()){
-                    menuIdDistanceList.add(new MenuIdDistance(menuLocation.getMenuEntity().getId(), distance));
-                }
-            }
-        }
-        log.info("getMenuIdDistance 끝");
-        return menuIdDistanceList;
-    }
 
-
-    public double getDistance(double lat1, double lon1, double lat2, double lon2) {
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat/2)* Math.sin(dLat/2)+ Math.cos(Math.toRadians(lat1))* Math.cos(Math.toRadians(lat2))* Math.sin(dLon/2)* Math.sin(dLon/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double d =EARTH_RADIUS* c * 1000;
-        return d;
-    }
 }
