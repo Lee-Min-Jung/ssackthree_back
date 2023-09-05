@@ -234,7 +234,10 @@ public class MenuService {
         // 해당 유저가 설정한 위치 정보
         Optional<UserLocationEntity> userLocation = userLocationRepository.findTopByUserEntityIdOrderByCreatedDateDesc(homePageRequestDto.getUserId());
         // 위의 조건 만족하면서 거리 안에 있는 id와 거리 리스트
-        List<MenuIdDistance> idDistanceList = getMenuIdDistance(userLocation.get(), menuIdListForBarginAndType);
+        List<MenuIdDistance> idDistanceList = new ArrayList<MenuIdDistance>();
+        if(userLocation.isPresent()){ // 만약 user의 위치가 등록되어 있는 경우
+            idDistanceList = getMenuIdDistance(userLocation.get(), menuIdListForBarginAndType);
+        }
         List<Long> menuIdList = new ArrayList<>();
         List<Double> menuDistanceList = new ArrayList<>();
 
