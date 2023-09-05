@@ -323,6 +323,7 @@ public class MenuService {
                 .isBargainning(menu.getIsBargainning())
                 .bargainLimitTime(Optional.ofNullable(menu.getMenuBargainningEntity()).map(MenuBargainningEntity::getLimitTime).orElse(0))
                 .saleEndTime(menu.getEndTime())
+                .minPrice(menu.getMenuBargainningEntity() != null ? menu.getMenuBargainningEntity().getMinPrice() : 0)
                 .imagePath(Optional.ofNullable(menu.getMenuFileEntity().get(0)).map(MenuFileEntity::getFilePath).orElse(""))
                 .isMenuLike(isMenuLike(menu, userId))
                 .build();

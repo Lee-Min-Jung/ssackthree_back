@@ -21,4 +21,5 @@ public class MenuDetailDto {
     private int discountedPrice;
     private String imagePath;
     private String isMenuLike;
+    private int minPrice;
 }
