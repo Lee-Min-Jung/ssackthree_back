@@ -47,6 +47,7 @@ public class KakaoPayService {
     private final UserRepository userRepository;
     private final MenuStatusRepository menuStatusRepository;
     private final BargainOrderRepository bargainOrderRepository;
+    private final NotificationService notificationService;
 
     public KakaoPayReadyResponseDto payReady(KakaoPayRequestDto kakaoPayRequestDto){
         // 해당 메뉴 id로 결제 중인 것이 있는 지 확인
@@ -145,6 +146,10 @@ public class KakaoPayService {
         approveResponse.setKakaoPayResultResponseDto(getKakaoPayResultResponseDto(Long.parseLong(approveResponse.getPartner_order_id())));
 
 //        return approveResponse;
+
+        // 결제 완료 알림
+        notificationService.notify(order.getMenuEntity().getStoreEntity().getUserEntity().getId(), "결제 완료");
+
 
         return "https://www.naver.com/";
 

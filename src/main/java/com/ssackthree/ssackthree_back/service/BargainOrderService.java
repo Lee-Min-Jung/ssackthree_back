@@ -28,7 +28,7 @@ public class BargainOrderService {
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
     private final MenuStatusRepository menuStatusRepository;
-    private final NoticeService noticeService;
+    private final NotificationService notificationService;
 
 
     // 흥정 주문
@@ -42,8 +42,9 @@ public class BargainOrderService {
                 .build();
         bargainOrderRepository.save(bargainOrderEntity);
 
-        // 점주에게 흥정 공지 보내기
-//        noticeService.sendBargainNoticeToStore(bargainOrderRequestDto);
+
+        // 점주에게 흥정 공지
+        notificationService.notify(bargainOrderRequestDto.getReceiverUserId(), "흥정 주문");
     }
 
 
