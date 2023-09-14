@@ -202,30 +202,44 @@ public class KakaoPayService {
             menuStatusRepository.save(updatedMenuStatusEntity);
         // 흥정인 경우
         }else{
-            // 메뉴 상태 바꿈
-            MenuStatusEntity menuStatusEntity = menuEntity.getMenuStatusEntity();
-            MenuStatusEntity updatedMenuStatusEntity = MenuStatusEntity.builder()
-                    .menuStatus(MenuStatusEnum.BARGAIN_COMPLETED)
-                    .id(menuStatusEntity.getId())
-                    .menuEntity(menuEntity)
-                    .build();
-            menuStatusRepository.save(updatedMenuStatusEntity);
-
-            // 흥정 주문의 메뉴 상태 바꿈
-            long menuId = menuEntity.getId();
-            long userId = Long.parseLong(approveResponse.getPartner_user_id());
-            Optional<BargainOrderEntity> bargainOrder = bargainOrderRepository.findByMenuEntityIdAndUserEntityId(menuId, userId);
-            if(bargainOrder.isPresent()){
-                BargainOrderEntity updatedBargainOrder = BargainOrderEntity.builder()
-                        .id(bargainOrder.get().getId())
-                        .status(BargainStatusEnum.BARGAIN_COMPLETED)
-                        .menuEntity(bargainOrder.get().getMenuEntity())
-                        .userEntity(bargainOrder.get().getUserEntity())
-                        .bargainPrice(bargainOrder.get().getBargainPrice())
-                        .createdDate(bargainOrder.get().getCreatedDate())
+            // 만약 흥정 제안 없이 바로 주문하는 경우
+            if(menuEntity.getMenuStatusEntity().getMenuStatus().equals(MenuStatusEnum.BARGAIN_ING)){
+                log.info("++++++++++++++++++++++++");
+                log.info("흥정 제안 없이 바로 주문");
+                MenuStatusEntity menuStatusEntity = menuEntity.getMenuStatusEntity();
+                MenuStatusEntity updatedMenuStatusEntity = MenuStatusEntity.builder()
+                        .menuStatus(MenuStatusEnum.ORDER_COMPLETED)
+                        .id(menuStatusEntity.getId())
+                        .menuEntity(menuEntity)
                         .build();
-                bargainOrderRepository.save(updatedBargainOrder);
+                menuStatusRepository.save(updatedMenuStatusEntity);
+            }else{
+                // 메뉴 상태 바꿈
+                MenuStatusEntity menuStatusEntity = menuEntity.getMenuStatusEntity();
+                MenuStatusEntity updatedMenuStatusEntity = MenuStatusEntity.builder()
+                        .menuStatus(MenuStatusEnum.BARGAIN_COMPLETED)
+                        .id(menuStatusEntity.getId())
+                        .menuEntity(menuEntity)
+                        .build();
+                menuStatusRepository.save(updatedMenuStatusEntity);
+
+                // 흥정 주문의 메뉴 상태 바꿈
+                long menuId = menuEntity.getId();
+                long userId = Long.parseLong(approveResponse.getPartner_user_id());
+                Optional<BargainOrderEntity> bargainOrder = bargainOrderRepository.findByMenuEntityIdAndUserEntityId(menuId, userId);
+                if(bargainOrder.isPresent()){
+                    BargainOrderEntity updatedBargainOrder = BargainOrderEntity.builder()
+                            .id(bargainOrder.get().getId())
+                            .status(BargainStatusEnum.BARGAIN_COMPLETED)
+                            .menuEntity(bargainOrder.get().getMenuEntity())
+                            .userEntity(bargainOrder.get().getUserEntity())
+                            .bargainPrice(bargainOrder.get().getBargainPrice())
+                            .createdDate(bargainOrder.get().getCreatedDate())
+                            .build();
+                    bargainOrderRepository.save(updatedBargainOrder);
+                }
             }
+
 
         }
 
