@@ -31,6 +31,7 @@ public class BargainOrderService {
     private final NotificationService notificationService;
 
 
+
     // 흥정 주문
     public void bargainOrder(BargainOrderRequestDto bargainOrderRequestDto){
         BargainOrderEntity bargainOrderEntity = BargainOrderEntity.builder()
@@ -44,7 +45,7 @@ public class BargainOrderService {
 
 
         // 점주에게 흥정 공지
-        notificationService.notify(bargainOrderRequestDto.getReceiverUserId(), "흥정 주문");
+        notificationService.notify(bargainOrderRequestDto.getReceiverUserId(), "흥정이 들어왔습니다");
     }
 
 
@@ -123,6 +124,9 @@ public class BargainOrderService {
         // 흥정 거절된 메뉴의 흥정 주문 상태 바꾸기
         changeBargainOrderStatus(bargainDenyRequestDto, BargainStatusEnum.BARGAIN_FAIL);
 
+        // 흥정 실패 알림 보내기
+        notificationService.notify(bargainDenyRequestDto.getUserId(), "흥정 실패");
+
     }
     // 흥정 수락
     public void acceptBargain(BargainAcceptDenyRequestDto bargainAcceptRequestDto){
@@ -130,16 +134,21 @@ public class BargainOrderService {
         Optional<List<BargainOrderEntity>> bargainOrderEntityList = bargainOrderRepository.findByMenuEntityId(bargainAcceptRequestDto.getMenuId());
         if(bargainOrderEntityList.isPresent()){
             for(BargainOrderEntity bargainOrder : bargainOrderEntityList.get()){
-                BargainOrderEntity bargainOrderEntity = BargainOrderEntity.builder()
-                        .id(bargainOrder.getId())
-                        .menuEntity(bargainOrder.getMenuEntity())
-                        .userEntity(bargainOrder.getUserEntity())
-                        .bargainPrice(bargainOrder.getBargainPrice())
-                        .status(BargainStatusEnum.BARGAIN_FAIL)
-                        .modifiedDate(LocalDateTime.now())
-                        .createdDate(bargainOrder.getCreatedDate())
-                        .build();
-                bargainOrderRepository.save(bargainOrderEntity);
+                if(bargainAcceptRequestDto.getUserId() != bargainOrder.getUserEntity().getId()){
+                    BargainOrderEntity bargainOrderEntity = BargainOrderEntity.builder()
+                            .id(bargainOrder.getId())
+                            .menuEntity(bargainOrder.getMenuEntity())
+                            .userEntity(bargainOrder.getUserEntity())
+                            .bargainPrice(bargainOrder.getBargainPrice())
+                            .status(BargainStatusEnum.BARGAIN_FAIL)
+                            .modifiedDate(LocalDateTime.now())
+                            .createdDate(bargainOrder.getCreatedDate())
+                            .build();
+                    bargainOrderRepository.save(bargainOrderEntity);
+                    // 알림
+                    notificationService.notify(bargainOrderEntity.getUserEntity().getId(), "흥정 실패");
+                }
+
             }
         }
 
@@ -156,6 +165,9 @@ public class BargainOrderService {
                     .build();
             menuStatusRepository.save(menuStatus);
         }
+
+        // 수락받은 유저에게 알림 보내기
+        notificationService.notify(bargainAcceptRequestDto.getUserId(), "흥정 성공");
     }
 
     // 흥정 주문 상태 바꾸기
