@@ -1,9 +1,6 @@
 package com.ssackthree.ssackthree_back.service;
 
-import com.ssackthree.ssackthree_back.dto.BargainAcceptDenyRequestDto;
-import com.ssackthree.ssackthree_back.dto.BargainListResponseDto;
-import com.ssackthree.ssackthree_back.dto.BargainOrderRequestDto;
-import com.ssackthree.ssackthree_back.dto.BeforeOrderResponseDto;
+import com.ssackthree.ssackthree_back.dto.*;
 import com.ssackthree.ssackthree_back.entity.*;
 import com.ssackthree.ssackthree_back.enums.BargainStatusEnum;
 import com.ssackthree.ssackthree_back.enums.MenuStatusEnum;
@@ -45,7 +42,12 @@ public class BargainOrderService {
 
 
         // 점주에게 흥정 공지
-        notificationService.notify(bargainOrderRequestDto.getReceiverUserId(), "흥정이 들어왔습니다");
+        NotificationResponseDto notificationResponseDto = NotificationResponseDto.builder()
+                .title("흥정 제안")
+                .content(bargainOrderEntity.getMenuEntity().getName()+"에 " + bargainOrderEntity.getBargainPrice() + "원으로 흥정이 들어왔습니다.")
+                .createdDate(String.valueOf(LocalDateTime.now()))
+                .build();
+        notificationService.notify(bargainOrderRequestDto.getReceiverUserId(), notificationResponseDto);
     }
 
 
@@ -125,7 +127,12 @@ public class BargainOrderService {
         changeBargainOrderStatus(bargainDenyRequestDto, BargainStatusEnum.BARGAIN_FAIL);
 
         // 흥정 실패 알림 보내기
-        notificationService.notify(bargainDenyRequestDto.getUserId(), "흥정 실패");
+        NotificationResponseDto notificationResponseDto = NotificationResponseDto.builder()
+                .title("흥정 실패")
+                .content(menuRepository.findById(bargainDenyRequestDto.getMenuId()).get().getName() + " 흥정에 실패했습니다")
+                .createdDate(String.valueOf(LocalDateTime.now()))
+                .build();
+        notificationService.notify(bargainDenyRequestDto.getUserId(), notificationResponseDto);
 
     }
     // 흥정 수락
@@ -146,7 +153,12 @@ public class BargainOrderService {
                             .build();
                     bargainOrderRepository.save(bargainOrderEntity);
                     // 알림
-                    notificationService.notify(bargainOrderEntity.getUserEntity().getId(), "흥정 실패");
+                    NotificationResponseDto notificationResponseDto = NotificationResponseDto.builder()
+                            .title("흥정 실패")
+                            .content(bargainOrderEntity.getMenuEntity().getName() + " 흥정에 실패했습니다")
+                            .createdDate(String.valueOf(LocalDateTime.now()))
+                            .build();
+                    notificationService.notify(bargainOrderEntity.getUserEntity().getId(), notificationResponseDto);
                 }
 
             }
@@ -167,7 +179,12 @@ public class BargainOrderService {
         }
 
         // 수락받은 유저에게 알림 보내기
-        notificationService.notify(bargainAcceptRequestDto.getUserId(), "흥정 성공");
+        NotificationResponseDto notificationResponseDto = NotificationResponseDto.builder()
+                .title("흥정 성공")
+                .content(menuRepository.findById(bargainAcceptRequestDto.getMenuId()).get().getName() + " 흥정에 성공했습니다")
+                .createdDate(String.valueOf(LocalDateTime.now()))
+                .build();
+        notificationService.notify(bargainAcceptRequestDto.getUserId(), notificationResponseDto);
     }
 
     // 흥정 주문 상태 바꾸기

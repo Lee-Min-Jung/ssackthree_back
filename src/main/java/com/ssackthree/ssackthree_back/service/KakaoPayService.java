@@ -1,9 +1,6 @@
 package com.ssackthree.ssackthree_back.service;
 
-import com.ssackthree.ssackthree_back.dto.KakaoPayApproveResponseDto;
-import com.ssackthree.ssackthree_back.dto.KakaoPayReadyResponseDto;
-import com.ssackthree.ssackthree_back.dto.KakaoPayRequestDto;
-import com.ssackthree.ssackthree_back.dto.KakaoPayResultResponseDto;
+import com.ssackthree.ssackthree_back.dto.*;
 import com.ssackthree.ssackthree_back.entity.*;
 import com.ssackthree.ssackthree_back.enums.BargainStatusEnum;
 import com.ssackthree.ssackthree_back.enums.MenuStatusEnum;
@@ -148,7 +145,12 @@ public class KakaoPayService {
 //        return approveResponse;
 
         // 결제 완료 알림
-        notificationService.notify(order.getMenuEntity().getStoreEntity().getUserEntity().getId(), "결제 완료");
+        NotificationResponseDto notificationResponseDto = NotificationResponseDto.builder()
+                .title("결제 완료")
+                .content(order.getMenuEntity().getName()+"의 결제가 완료되었습니다.")
+                .createdDate(String.valueOf(LocalDateTime.now()))
+                .build();
+        notificationService.notify(order.getMenuEntity().getStoreEntity().getUserEntity().getId(), notificationResponseDto);
 
 
         return "https://www.naver.com/";
