@@ -19,6 +19,8 @@ public class TownProductDetailResponseDto {
     private String status;
     private int price;
     private String hopingPlaceAddress;
+    private double latitude;
+    private double longitude;
     private String createdDate;
     private String content;
     private String imagePath;

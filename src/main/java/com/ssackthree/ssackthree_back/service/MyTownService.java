@@ -245,6 +245,8 @@ public class MyTownService {
                 .content(myTownProductEntity.getContent())
                 .createdDate(myTownProductEntity.getCreatedDate().toString())
                 .hopingPlaceAddress(myTownProductEntity.getHopingPlaceAddress())
+                .latitude(myTownProductEntity.getMyTownProductHopingPlace().getLatitude())
+                .longitude(myTownProductEntity.getMyTownProductHopingPlace().getLongitude())
                 .price(myTownProductEntity.getPrice())
                 .status(myTownProductEntity.getMyTownProductStatusEntity().getProductStatus().toString())
                 .isLike(isTownLike(myTownProductEntity, userId))
