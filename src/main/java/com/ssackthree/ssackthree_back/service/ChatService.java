@@ -82,10 +82,14 @@ public class ChatService {
         List<ChatRoomEntity> chatRoomEntityList = chatRoomRepository.findAllChatRoomById(userId).get();
         for(ChatRoomEntity cr : chatRoomEntityList){
             UserEntity counterpart = cr.getUserEntity1().getId() == userId ? cr.getUserEntity2() : cr.getUserEntity1();
+
             // 채팅방에 메시지가 1개라도 있는 경우
             if(!cr.getChatMessageEntityList().isEmpty()){
                 // 상대가 점주일때
                 if(counterpart.getRole().equals(RoleEnum.ROLE_STORE)){
+                    log.info("?????????????????????");
+                    log.info(counterpart.getUsername());
+                    log.info(counterpart.getStoreEntity().getStoreName());
                     ChatListResponseDto chatListResponseDto = ChatListResponseDto.builder()
                             .chatRoomId(cr.getId())
                             .counterpartUserId(counterpart.getId())

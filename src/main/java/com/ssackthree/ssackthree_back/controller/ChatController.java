@@ -22,6 +22,8 @@ public class ChatController {
 
     @GetMapping(path = "/room/list/{userId}")
     public List<ChatListResponseDto> showChatRoomList(@PathVariable(name="userId") long userId){
+        log.info("++++++++++++++++++++++++");
+        log.info("채팅방 목록 보여주기");
         return chatService.showChatRoomList(userId);
     }
 

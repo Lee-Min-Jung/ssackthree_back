@@ -18,7 +18,7 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Long> {
             "FROM MenuEntity m " +
             "WHERE (:isBargainning = '' OR m.isBargainning = :isBargainning) " +
             "AND (:typeList IS NULL OR m.type IN :typeList)" +
-            "AND (m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.ORDER_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_COMPLETED)"
+            "AND (m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.ORDER_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_SUCCESS)"
     )
     List<Long> findIdsByIsBargainningAndTypeIn(@Param("isBargainning") String isBargainning, @Param("typeList") List<MenuTypeEnum> typeList);
 
@@ -26,7 +26,7 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Long> {
             "from MenuEntity m " +
             "where (m.isBargainning = :isBargainning) " +
             "and (m.storeEntity.id = :storeId) " +
-            "and (m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.ORDER_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_COMPLETED)")
+            "and (m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.ORDER_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_SUCCESS)")
     Optional<List<MenuEntity>> findByStoreEntityIdAndIsBargainningAndMenuStatus(long storeId, @Param("isBargainning") String isBargainning);
 
 
