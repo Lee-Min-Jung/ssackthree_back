@@ -153,7 +153,7 @@ public class KakaoPayService {
         notificationService.notify(order.getMenuEntity().getStoreEntity().getUserEntity().getId(), notificationResponseDto);
 
 
-        return "https://www.naver.com/";
+        return "";
 
     }
 
