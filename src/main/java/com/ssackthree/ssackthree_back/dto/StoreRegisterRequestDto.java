@@ -1,9 +1,6 @@
 package com.ssackthree.ssackthree_back.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalTime;
@@ -13,9 +10,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class StoreRegisterRequestDto {
 
-    private long id;
     private String storeName;
     private String mainAddress;
     private String detailAddress;
@@ -26,4 +23,6 @@ public class StoreRegisterRequestDto {
     private String holiday;
     private String introduce;
     private long userId;
+    private List<MultipartFile> profileImages;
+    private List<MultipartFile> menuImages;
 }

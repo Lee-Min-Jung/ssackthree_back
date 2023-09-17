@@ -53,8 +53,7 @@ public class StoreService {
     private String apiKey;
 
     // 점주의 가게 내용 등록
-    public void registerStore(StoreRegisterRequestDto storeRegisterRequestDto, MultipartFile profile, MultipartFile[] menus) throws Exception{
-
+    public void registerStore(StoreRegisterRequestDto storeRegisterRequestDto) throws Exception{
         //가게 일반 내용 저장
         long userId = storeRegisterRequestDto.getUserId();
         Optional<UserEntity> user = userRepository.findById(userId);
@@ -76,38 +75,42 @@ public class StoreService {
         registerLocation(storeEntity, storeRegisterRequestDto.getMainAddress());
 
         // 프로필 사진 저장
-        registerProfileImage(profile, storeEntity);
+        registerProfileImage(storeRegisterRequestDto.getProfileImages(), storeEntity);
 
         // 가게 메뉴 파일 저장
-        registerMenuImage(menus, storeEntity);
+        registerMenuImage(storeRegisterRequestDto.getMenuImages(), storeEntity);
 
 
 
     }
 
     // 가게 등록 중 프로필 사진 저장
-    public void registerProfileImage(MultipartFile profile, StoreEntity storeEntity) throws Exception{
-        if(profile != null){
-            String savedProfileFileName = fileService.getSavedFileName(profile);
+    public void registerProfileImage(List<MultipartFile> profiles, StoreEntity storeEntity) throws Exception{
+        if(profiles != null){
+            ArrayList<StoreProfileFileEntity> profileFileEntities = new ArrayList<>();
 
-            // s3에 파일 업로드
-            fileService.uploadFile(profile, savedProfileFileName);
+            for(MultipartFile profile : profiles){
+                String savedProfileFileName = fileService.getSavedFileName(profile);
+                fileService.uploadFile(profile, savedProfileFileName);
+                StoreProfileFileEntity storeProfileFileEntity = StoreProfileFileEntity.builder()
+                        .fileOriginName(profile.getOriginalFilename())
+                        .fileName(savedProfileFileName)
+                        .filePath(fileService.getUrl(savedProfileFileName))
+                        .storeEntity(storeEntity)
+                        .build();
+                profileFileEntities.add(storeProfileFileEntity);
+            }
 
             // DB 내용 저장
-            StoreProfileFileEntity storeProfileFileEntity = StoreProfileFileEntity.builder()
-                    .fileOriginName(profile.getOriginalFilename())
-                    .fileName(savedProfileFileName)
-                    .filePath(fileService.getUrl(savedProfileFileName))
-                    .storeEntity(storeEntity)
-                    .build();
-            storeProfileFileRepository.save(storeProfileFileEntity);
+
+            storeProfileFileRepository.saveAll(profileFileEntities);
 
         }
     }
 
     // 가게 등록 중 메뉴 이미지 저장
-    public void registerMenuImage(MultipartFile[] menus, StoreEntity storeEntity) throws Exception{
-        if(menus != null && menus.length != 0){
+    public void registerMenuImage(List<MultipartFile> menus, StoreEntity storeEntity) throws Exception{
+        if(menus != null){
             ArrayList<StoreMenuFileEntity> storeMenuFileEntities = new ArrayList<>();
 
             for(MultipartFile menu : menus){

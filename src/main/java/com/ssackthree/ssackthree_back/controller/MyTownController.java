@@ -20,7 +20,6 @@ public class MyTownController {
 
     @PostMapping("register")
     public int registerProduct(TownRegisterProductRequestDto townRegisterProductRequestDto) throws Exception {
-        log.info("registerProduct 컨트롤러 실행");
         return myTownService.registerProduct(townRegisterProductRequestDto);
     }
 
