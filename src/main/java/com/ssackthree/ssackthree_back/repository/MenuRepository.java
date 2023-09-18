@@ -29,6 +29,8 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Long> {
             "and (m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.ORDER_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_ING OR m.menuStatusEntity.menuStatus = com.ssackthree.ssackthree_back.enums.MenuStatusEnum.BARGAIN_SUCCESS)")
     Optional<List<MenuEntity>> findByStoreEntityIdAndIsBargainningAndMenuStatus(long storeId, @Param("isBargainning") String isBargainning);
 
+//    @Query("select m from MenuEntity m where (m.name LIKE :searchWord)")
+//    Optional<List<MenuEntity>> findByWord(@Param("searchWord") String searchWord);
 
 
 

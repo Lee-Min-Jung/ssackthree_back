@@ -393,7 +393,7 @@ public class MenuService {
 
         if(store.isPresent()){
             for(MenuEntity m : store.get().getMenuEntityList()){
-                if(m.getMenuStatusEntity().getMenuStatus().toString().equals("ORDER_COMPLETED") || m.getMenuStatusEntity().getMenuStatus().toString().equals("BARGAIN_SUCCESS")){
+                if(m.getMenuStatusEntity().getMenuStatus().toString().equals("ORDER_COMPLETED") || m.getMenuStatusEntity().getMenuStatus().toString().equals("BARGAIN_COMPLETED")){
                     MyPageSellListResponseDto myPageSellListResponseDto = MyPageSellListResponseDto.builder()
                             .menuName(m.getName())
                             .originalPrice(m.getOriginalPrice())
