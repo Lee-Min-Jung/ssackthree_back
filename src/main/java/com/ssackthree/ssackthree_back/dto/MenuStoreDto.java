@@ -12,6 +12,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MenuStoreDto {
+    private long storeId;
     private String storeName;
     private LocalTime startTime;
     private LocalTime endTime;

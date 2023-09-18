@@ -340,6 +340,7 @@ public class MenuService {
 
     public MenuStoreDto setMenuStoreDto(StoreEntity store, long userId){
         return MenuStoreDto.builder()
+                .storeId(store.getId())
                 .storeName(store.getStoreName())
                 .startTime(store.getStartTime())
                 .endTime(store.getEndTime())
