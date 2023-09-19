@@ -240,6 +240,7 @@ public class MyTownService {
 
         TownProductDetailResponseDto townProductDetailResponseDto = TownProductDetailResponseDto.builder()
                 .writerId(myTownProductEntity.getUserEntity().getId())
+                .writerNickname(myTownProductEntity.getUserEntity().getRepName())
                 .productId(myTownProductEntity.getId())
                 .title(myTownProductEntity.getTitle())
                 .content(myTownProductEntity.getContent())

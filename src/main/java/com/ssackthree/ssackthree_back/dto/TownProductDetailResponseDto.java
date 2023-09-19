@@ -15,6 +15,7 @@ import java.util.List;
 public class TownProductDetailResponseDto {
     private long writerId;
     private long productId;
+    private String writerNickname;
     private String title;
     private String status;
     private int price;
